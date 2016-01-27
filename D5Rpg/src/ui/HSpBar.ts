@@ -30,7 +30,7 @@
  * Created by Administrator on 2015/6/11.
  */
 module d5power {
-    export class HSpBar extends CharacterStuff
+    export class HSpBar extends CharacterStuff implements IUserInfoDisplayer
     {
         private color:number;
         /**
@@ -40,13 +40,13 @@ module d5power {
          * @param		ytype		Y轴位置，若大于1则使用该值进行定位
          * @param		resource	使用素材
          */
-        public constructor(target:IGD,attName:string,attMaxName:string,ytype:number = 1,color:number = 0x990000)
+        public constructor(target:any,attName:string,attMaxName:string,ytype:number = 1,color:number = 0x990000)
         {
             super(target,attName,attMaxName);
             this.color = color;
             this.y = ytype;
             this.x = -(this._size>>1);
-
+            D5Game.me.characterData.addDisplayer(this);
             this.update();
         }
         /**
@@ -76,11 +76,12 @@ module d5power {
          */
         public update():void
         {
-            if(this._lastRender==this._target[this._attName]) return;
-            this._lastRender = this._target[this._attName];
+            if(this._lastRender==parseInt(this._target[this._attName])) return;
+            this._lastRender = parseInt(this._target[this._attName]);
+            var max:number = parseInt(this._target[this._attMaxName]);
             this.graphics.clear();
             this.graphics.beginFill(this.color);
-            this.graphics.drawRect(0,0,<number>(this._size*this._target[this._attName]/this._target[this._attMaxName]),4);
+            this.graphics.drawRect(0,0,this._size*this._lastRender/max,4);
             this.graphics.endFill();
             this.graphics.lineStyle(1);
             this.graphics.lineTo(this._size,0);

@@ -5,6 +5,7 @@ module d5power {
 
     export class NpcData {
         public id:number; //npc Id
+        public isDB:number = 0;
         public name:string;//npc Ãû
         public skin:string;//npc Æ¤·ô
         public head:string;//npc Í·Ïñ
@@ -14,6 +15,10 @@ module d5power {
         }
         public format(xml:any):void{
             this.id = parseInt(xml.id);
+            if(xml.isDB)
+            {
+                this.isDB = parseInt(xml.isDB);
+            }
             this.name = <string><any>(xml.name);
             this.skin = <string><any>(xml.skin);
             this.head = <string><any>(xml.head);

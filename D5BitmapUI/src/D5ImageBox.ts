@@ -27,129 +27,118 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-module d5power
-{
+module d5power {
 
-	export class D5ImageBox extends D5MirrorBox
-    {
-        private  _url:string;
+    export class D5ImageBox extends D5MirrorBox {
+        private _url: string;
 
-        private spr:egret.Sprite;
+        private spr: egret.Sprite;
 
-        private _resource:egret.SpriteSheet;
+        private _resource: egret.SpriteSheet;
 
-        private _name:string;
+        private _name: string;
 
-        protected _logo:egret.Bitmap;
+        protected _logo: egret.Bitmap;
         /**
          * 物品数量
          */
-        protected _itemNum:number;
+        protected _itemNum: number;
         /**
          * 是否显示数量
          */
-        protected _showNum:boolean=false;
+        protected _showNum: boolean = false;
         /**
          * 数量显示器
          */
-        protected numShower:D5Text;
+        protected numShower: D5Text;
 
-        public _id:number;
+        public _id: number;
 
-        public static _resourceLib:any={};
+        public static _resourceLib: any = {};
 
-        public constructor()
-        {
+        public constructor() {
             super();
 
         }
 
-        private addParticle():void
-        {
+        private addParticle(): void {
             //外部加载icon，url为全路径，如：resource/..
             RES.getResByUrl(this._url,this.onGroupComplete,this)
         }
-        public onGroupComplete(data:egret.Texture):void
-        {
-            if(this._logo==null)
-            {
+        public onGroupComplete(data: egret.Texture): void {
+            if(this._logo == null) {
                 this._logo = new egret.Bitmap();
             }
             this._logo.texture = data;
             this.addChildAt(this._logo,0);
-            this._logo.scaleX = this._w / this._logo.width;
-            this._logo.scaleY = this._h / this._logo.height;
-            this._logo.fillMode = egret.BitmapFillMode.REPEAT;
-            this._logo.x = 0;
-            this._logo.y = 0;
+            this.invalidate();
         }
 
-		/**
-		 * 设置物品图片
-		 */ 
-		public setLogo(url:string){
-            if(this.spr == null)
-            {
+        /**
+         * 设置物品图片
+         */
+        public setLogo(url: string) {
+            if(this.spr == null) {
                 this.spr = new egret.Sprite();
                 this.addChild(this.spr);
             }
 
-            for(var i:number=0; i < this.spr.numChildren; i++)
-            {
-                var obj:egret.DisplayObject = this.spr.getChildAt(i);
+            for(var i: number = 0;i < this.spr.numChildren;i++) {
+                var obj: egret.DisplayObject = this.spr.getChildAt(i);
                 if(obj.parent) obj.parent.removeChild(obj);
                 obj = null;
             }
-            if(url != "")
-            {
+            if(url != "") {
                 this._url = url;
                 this.addParticle();
                 //this.addEventListener(egret.Event.COMPLETE,this.over,this);
             }
-		}
-        public removeLogo():void
-        {
-            if(this._logo&& this.contains(this._logo))
-            {
+        }
+        public removeLogo(): void {
+            if(this._logo && this.contains(this._logo)) {
                 this.removeChild(this._logo);
                 //this._logo = null;
             }
         }
+        public draw(): void {
+            if(this._logo) {
+                this._logo.scaleX = this._w / this._logo.width;
+                this._logo.scaleY = this._h / this._logo.height;
+                this._logo.fillMode = egret.BitmapFillMode.REPEAT;
+            }
 
-        private over(evt:egret.Event):void
-        {
+            super.draw();
+        }
+
+        private over(evt: egret.Event): void {
             this.addParticle();
         }
-		
-		/**
-		 * 设置URL，本功能仅用来保存URL，不会加载地址
-		 * 如需要加载，请使用logo属性，或者通过logoData直接设置位图数据
-		 */ 
-		public set url(v:string){
-			this._url = v;
-		}
+
+        /**
+         * 设置URL，本功能仅用来保存URL，不会加载地址
+         * 如需要加载，请使用logo属性，或者通过logoData直接设置位图数据
+         */
+        public set url(v: string) {
+            this._url = v;
+        }
         /**
          * 是否显示数量（例如背包的右下角数据）
          */
-        public showNum(b:boolean):void
-        {
+        public showNum(b: boolean): void {
             this._showNum = b;
-            if(!this._showNum && this.numShower!=null && this.contains(this.numShower))
-            {
+            if(!this._showNum && this.numShower != null && this.contains(this.numShower)) {
                 this.removeChild(this.numShower);
                 this.numShower = null;
-            }else if(this._showNum && this.numShower==null){
+            } else if(this._showNum && this.numShower == null) {
                 this.buildNumShower();
             }
         }
-        protected buildNumShower():void
-        {
-            if(this.numShower==null)
-            {
+        protected buildNumShower(): void {
+            if(this.numShower == null) {
                 this.numShower = new D5Text('0',0xd4cc75);
-                this.numShower.setFontBorder (0x000000);
+                this.numShower.setFontBorder(0x000000);
                 this.numShower.setTextAlign(D5Text.RIGHT);
-                this.numShower.setSize(20,18);
+                this.numShower.setSize(50,18);
             }
             this.numShower.x = this._w - this.numShower.width;
             this.numShower.y = this._h - this.numShower.height;
@@ -158,26 +147,22 @@ module d5power
         /**
          * 设置数量
          */
-        public setNum(v:number):void
-        {
+        public setNum(v: number): void {
             this._itemNum = v;
-            if(this.numShower!=null) this.numShower.setText(v.toString());
+            if(this.numShower != null) this.numShower.setText(v.toString());
         }
         /**
          * 获取数量
          */
-        public get num():number
-        {
+        public get num(): number {
             return this._itemNum;
         }
-        public get id():number
-        {
+        public get id(): number {
             return this._id;
         }
 
-        public  setId(value:number):void
-        {
+        public setId(value: number): void {
             this._id = value;
         }
-	}
+    }
 }

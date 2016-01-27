@@ -82,7 +82,7 @@ module d5power {
                     {
                         this._shape.graphics.lineStyle(this._tickNess, this._color);
                     }
-                    this._shape.graphics.drawRect(this._offX,this._offY,this._drawWidth,this._drawHeight);
+                    this._shape.graphics.drawRect(this._offX,this._offY,this.width,this.height);
                     this._shape.graphics.endFill();
                     break;
                 case D5Shape.CIRCLE:

@@ -219,6 +219,7 @@ var d5power;
             var i;
             var l;
             if (data.uv) {
+                //console.log("[D5SpriteSheepINIT] totalFrame:",this._totalFrame,",uvdata nums:",data.uv.length);
                 for (l = 0; l < this._totalDirection; l++) {
                     for (i = 0; i < this._totalFrame; i++) {
                         var uvLine = l < 5 ? l : 8 - l;
@@ -395,5 +396,334 @@ var d5power;
     })();
     d5power.UVData = UVData;
     egret.registerClass(UVData,"d5power.UVData");
+})(d5power || (d5power = {}));
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, MicroGame Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Created by Administrator on 2015/4/22.
+ */
+var d5power;
+(function (d5power) {
+    var D5UIResourceData = (function () {
+        function D5UIResourceData() {
+            this._resList = [];
+        }
+        var d = __define,c=D5UIResourceData;p=c.prototype;
+        D5UIResourceData.setupResLib = function (bitmap, config) {
+            D5UIResourceData._resource = new egret.SpriteSheet(bitmap);
+            var obj;
+            var uv;
+            var cut;
+            var cut1;
+            var uvList;
+            for (var k in config) {
+                trace(k, config[k]);
+                obj = config[k];
+                var data = new D5UIResourceData();
+                uvList = [];
+                switch (obj.type) {
+                    case "D5MirrorBox":
+                        cut = obj.cut[0];
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x;
+                        uv.offY = obj.y;
+                        uv.width = cut.x;
+                        uv.height = cut.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + cut.x;
+                        uv.offY = obj.y;
+                        uv.width = obj.w - cut.x;
+                        uv.height = cut.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x;
+                        uv.offY = obj.y + cut.y;
+                        uv.width = cut.x;
+                        uv.height = obj.h - cut.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + cut.x;
+                        uv.offY = obj.y + cut.y;
+                        uv.width = obj.w - cut.x;
+                        uv.height = obj.h - cut.y;
+                        uvList.push(uv);
+                        data.setupResource(k, uvList);
+                        break;
+                    case "D5Window":
+                        cut = obj.cut[0];
+                        cut1 = obj.cut[1];
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x;
+                        uv.offY = obj.y;
+                        uv.width = cut.x;
+                        uv.height = cut.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + cut.x;
+                        uv.offY = obj.y;
+                        uv.width = cut1.x - cut.x;
+                        uv.height = cut.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + cut1.x;
+                        uv.offY = obj.y;
+                        uv.width = obj.w - cut1.x;
+                        uv.height = cut.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x;
+                        uv.offY = obj.y + cut.y;
+                        uv.width = cut.x;
+                        uv.height = cut1.y - cut.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + cut.x;
+                        uv.offY = obj.y + cut.y;
+                        uv.width = cut1.x - cut.x;
+                        uv.height = cut1.y - cut.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + cut1.x;
+                        uv.offY = obj.y + cut.y;
+                        uv.width = obj.w - cut1.x;
+                        uv.height = cut1.y - cut.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x;
+                        uv.offY = obj.y + cut1.y;
+                        uv.width = cut.x;
+                        uv.height = obj.h - cut1.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + cut.x;
+                        uv.offY = obj.y + cut1.y;
+                        uv.width = cut1.x - cut.x;
+                        uv.height = obj.h - cut1.y;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + cut1.x;
+                        uv.offY = obj.y + cut1.y;
+                        uv.width = obj.w - cut1.x;
+                        uv.height = obj.h - cut1.y;
+                        uvList.push(uv);
+                        data.setupResource(k, uvList);
+                        break;
+                    case "D5Button":
+                        cut = obj.cut[1];
+                        if (cut.x == 0) {
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x;
+                            uv.offY = obj.y;
+                            uv.width = obj.w / 4;
+                            uv.height = obj.h;
+                            uvList.push(uv);
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x + obj.w / 4;
+                            uv.offY = obj.y;
+                            uv.width = obj.w / 4;
+                            uv.height = obj.h;
+                            uvList.push(uv);
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x + obj.w / 2;
+                            uv.offY = obj.y;
+                            uv.width = obj.w / 4;
+                            uv.height = obj.h;
+                            uvList.push(uv);
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x + obj.w - obj.w / 4;
+                            uv.offY = obj.y;
+                            uv.width = obj.w / 4;
+                            uv.height = obj.h;
+                            uvList.push(uv);
+                            data.buttonType = 4;
+                        }
+                        else {
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x;
+                            uv.offY = obj.y;
+                            uv.width = obj.w / 2;
+                            uv.height = obj.h;
+                            uvList.push(uv);
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x + obj.w / 2;
+                            uv.offY = obj.y;
+                            uv.width = obj.w / 2;
+                            uv.height = obj.h;
+                            uvList.push(uv);
+                            data.buttonType = 2;
+                        }
+                        data.setupResource(k, uvList);
+                        break;
+                    case "D5MirrorLoop":
+                        cut = obj.cut[0];
+                        if (cut.y == 0) {
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x;
+                            uv.offY = obj.y;
+                            uv.width = cut.x;
+                            uv.height = obj.h;
+                            uvList.push(uv);
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x + cut.x;
+                            uv.offY = obj.y;
+                            uv.width = obj.w - cut.x;
+                            uv.height = obj.h;
+                            uvList.push(uv);
+                            D5UIResourceData._typeLoop = 0;
+                        }
+                        else {
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x;
+                            uv.offY = obj.y;
+                            uv.width = obj.w;
+                            uv.height = cut.y;
+                            uvList.push(uv);
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x;
+                            uv.offY = obj.y + cut.y;
+                            uv.width = obj.w;
+                            uv.height = obj.h - cut.y;
+                            uvList.push(uv);
+                            D5UIResourceData._typeLoop = 1;
+                        }
+                        data.setupResource(k, uvList);
+                        break;
+                    case "D5Bitmap":
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x;
+                        uv.offY = obj.y;
+                        uv.width = obj.w;
+                        uv.height = obj.h;
+                        uvList.push(uv);
+                        data.setupResource(k, uvList);
+                        break;
+                    case "D5RadioBtn":
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x;
+                        uv.offY = obj.y;
+                        uv.width = obj.w / 4;
+                        uv.height = obj.h;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + obj.w / 4;
+                        uv.offY = obj.y;
+                        uv.width = obj.w / 4;
+                        uv.height = obj.h;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + obj.w / 2;
+                        uv.offY = obj.y;
+                        uv.width = obj.w / 4;
+                        uv.height = obj.h;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + obj.w - obj.w / 4;
+                        uv.offY = obj.y;
+                        uv.width = obj.w / 4;
+                        uv.height = obj.h;
+                        uvList.push(uv);
+                        data.setupResource(k, uvList);
+                        break;
+                    case "D5SliderButton":
+                        cut = obj.cut[0];
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x;
+                        uv.offY = obj.y;
+                        uv.width = cut.x;
+                        uv.height = obj.h / 2;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + cut.x;
+                        uv.offY = obj.y;
+                        uv.width = obj.w - cut.x;
+                        uv.height = obj.h / 2;
+                        uvList.push(uv);
+                        uv = new d5power.UVData(); //下面是按钮素材   ，上面是背景素材
+                        uv.offX = obj.x;
+                        uv.offY = obj.y + obj.h / 2;
+                        uv.width = obj.w / 4;
+                        uv.height = obj.h / 2;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + obj.w / 4;
+                        uv.offY = obj.y + obj.h / 2;
+                        uv.width = obj.w / 4;
+                        uv.height = obj.h / 2;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + obj.w / 2;
+                        uv.offY = obj.y + obj.h / 2;
+                        uv.width = obj.w / 4;
+                        uv.height = obj.h / 2;
+                        uvList.push(uv);
+                        uv = new d5power.UVData();
+                        uv.offX = obj.x + obj.w - obj.w / 4;
+                        uv.offY = obj.y + obj.h / 2;
+                        uv.width = obj.w / 4;
+                        uv.height = obj.h / 2;
+                        uvList.push(uv);
+                        data.setupResource(k, uvList);
+                        break;
+                    case "D5BitmapNumber":
+                        for (var i = 0; i < 10; i++) {
+                            uv = new d5power.UVData();
+                            uv.offX = obj.x + i * obj.w / 10;
+                            uv.offY = obj.y;
+                            uv.width = obj.w / 10;
+                            uv.height = obj.h;
+                            uvList.push(uv);
+                        }
+                        data.setupResource(k, uvList);
+                        break;
+                }
+                D5UIResourceData._resourceLib[k] = data;
+            }
+        };
+        D5UIResourceData.getData = function (name) {
+            return D5UIResourceData._resourceLib[name];
+        };
+        p.setupResource = function (name, uvData) {
+            this._name = name;
+            for (var i = 0, j = uvData.length; i < j; i++) {
+                D5UIResourceData._resource.createTexture(name + i, uvData[i].offX, uvData[i].offY, uvData[i].width, uvData[i].height);
+            }
+        };
+        p.getResource = function (id) {
+            return D5UIResourceData._resource.getTexture(this._name + id);
+        };
+        D5UIResourceData._resourceLib = {};
+        D5UIResourceData._typeLoop = 0;
+        return D5UIResourceData;
+    })();
+    d5power.D5UIResourceData = D5UIResourceData;
+    egret.registerClass(D5UIResourceData,"d5power.D5UIResourceData");
 })(d5power || (d5power = {}));
 

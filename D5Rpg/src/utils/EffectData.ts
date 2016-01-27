@@ -29,14 +29,31 @@
 
 module d5power {
 	export class EffectData{
-
+		
+		/**
+		 * 特效声音
+		 */
         public sound:string;
+		/**
+		 * 特效名
+		 */
         public name:string;
+		/**
+		 * 循环帧
+		 */
+		public loopFream:number;
+		/**
+		 * 特效的实现配置
+		 */
         public implements:Array<EffectImplement>;
 
         public constructor(){
+			this.loopFream = 20;
         }
         
+		/**
+		 * 格式化
+		 */
         public format(data:any)
         {
             this.name = data.name;

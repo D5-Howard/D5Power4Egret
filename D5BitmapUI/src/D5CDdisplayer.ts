@@ -33,11 +33,15 @@ module d5power {
 	 *
 	 */
 	export class D5CDdisplayer extends d5power.D5Component{
+    	
+    	public static CIRCLE:number = 0;
+    	public static RECT:number = 1;
 		public constructor() {
             super();
+            this.alpha = 0.8;
             this.setSize(60,60);
 		}
-        
+        private  _mode:number = 0;
         private  _cd:number;
         private  _cding:boolean;
         private  _startX:number;
@@ -52,6 +56,11 @@ module d5power {
         private  _color:number = 0;
         //private  _alpha:number = 0.5;
         private  _drawPath:Array<any>;
+        
+        public setMode(v:number):void
+        {
+            this._mode = v;
+        }
        
         public  setColor(v:number):void
         {
@@ -111,8 +120,47 @@ module d5power {
             this.graphics.drawRect(0,0,this.width,this.height);
             this.addEventListener(egret.Event.ENTER_FRAME,this.render,this);
         }
+        private render(e: Event = null): void
+        {
+            if(this._mode == D5CDdisplayer.CIRCLE)
+            {
+                this.renderCircle();
+            }
+            else 
+            {
+                this.renderRect();
+            }
+        }
+        private renderCircle(e: Event = null): void
+        {
+            var t: number = egret.getTimer();
+            var checker: number = t - this._lastRender;
+            if(checker < this._renderSpeed) return;
+            checker = t - this._startTime;
+            if(checker >= this._cd) {
+                this.removeEventListener(egret.Event.ENTER_FRAME,this.render,this);
+                this._cding = false;
+                this.graphics.clear();
+                return;
+            }
+            this._progressLen = checker*360 / this._cd;
+
+            this.graphics.clear();
+            this.graphics.beginFill(this._color,this.alpha);
+            this.graphics.moveTo(this._startX,this._startY);
+
+            var angle: number;
+            for(var i: number = 0;i < this._progressLen;i+=5)
+            {
+                angle = i * Math.PI / 180;
+                this.graphics.lineTo(this._startX + this._startX * Math.sin(angle),this._startY - this._startY * Math.cos(angle));
+            }
+            this.graphics.lineTo(this._startX,this._startY);
+            this.graphics.endFill();
+            this._lastRender = t;
+        }
         
-        private  render(e:Event=null):void
+        private  renderRect(e:Event=null):void
         {
             var t:number = egret.getTimer();
             var checker:number = t-this._lastRender;
@@ -123,12 +171,17 @@ module d5power {
                 this.removeEventListener(egret.Event.ENTER_FRAME,this.render,this);
                 this._cding = false;
                 this.graphics.clear();
-                trace("Ended");
                 return;
             }
             this._progressLen = this._progressMax*(checker/this._cd);
             
             this.graphics.clear();
+            if(this._color == 0xffffff)
+            {
+                this.graphics.beginFill(0x000000,0.1);
+			    this.graphics.drawRect(0,0,60,60);
+			    this.graphics.endFill();
+            }
             this.graphics.beginFill(this._color,this.alpha);
             this.graphics.moveTo(this._startX,this._startY);
             

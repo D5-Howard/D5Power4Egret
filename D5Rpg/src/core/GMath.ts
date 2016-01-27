@@ -30,6 +30,8 @@
 module d5power {
 
 	export class GMath{
+        public static K_R2A:number = 180/Math.PI;
+        public static K_A2R:number = Math.PI/180;
 		public constructor(){
 		}
 		
@@ -45,14 +47,14 @@ module d5power {
 		 * 弧度转角度
 		 */ 
 		public static R2A(r:number):number{
-			return r*180/Math.PI;
+			return r*GMath.K_R2A;
 		}
 		
 		/**
 		 * 角度转弧度
 		 */ 
 		public static A2R(a:number = 0):number{
-			return a*Math.PI/180;	
+			return a*GMath.K_A2R;	
 		}
 	}
 }

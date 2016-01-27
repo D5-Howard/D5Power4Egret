@@ -5,7 +5,7 @@
 		{
 			"name": "d5bitmapui",
 			"description": "d5bitmapui",
-			"files": ["ui/IProBindingContainer.ts","ui/IProBindingSupport.ts","utils/D5UIResourceData.ts","D5Component.ts","D5Bitmap.ts","D5BitmapNumber.ts","D5Button.ts","D5CDdisplayer.ts","D5FlyBox.ts","D5ButtonGroup.ts","D5HBox.ts","D5List.ts","D5MirrorBox.ts","D5ImageBox.ts","D5MirrorLoop.ts","D5RadioBtn.ts","D5Shape.ts","D5SliderButton.ts","D5Style.ts","D5Swf.ts","D5Text.ts","D5HoverText.ts","D5UILoader.ts","D5VBox.ts","D5Window.ts","ListCell.ts"],
+			"files": ["ui/IProBindingContainer.ts","ui/IProBindingSupport.ts","D5Component.ts","D5Bitmap.ts","D5BitmapNumber.ts","D5Button.ts","D5CDdisplayer.ts","D5FlyBox.ts","D5ButtonGroup.ts","D5HBox.ts","D5List.ts","D5MirrorBox.ts","D5ImageBox.ts","D5MirrorLoop.ts","D5RadioBtn.ts","D5Shape.ts","D5SliderButton.ts","D5Style.ts","D5Swf.ts","D5Text.ts","D5HoverText.ts","D5UILoader.ts","D5VBox.ts","D5Window.ts","ListCell.ts"],
 			"root": "src"
 		}
 	]

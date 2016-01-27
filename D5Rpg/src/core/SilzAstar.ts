@@ -95,6 +95,10 @@ module d5power {
             ypos = Math.min(ypos, this._grid.numRows - 1);
             xpos = Math.max(xpos, 0);
             ypos = Math.max(ypos, 0);
+            
+            // 超出寻路范围
+            if(!this._grid.nodeValuable(xpos,ypos)) return null;
+            
             this._grid.setEndNode(xpos, ypos); //1
 
 
@@ -103,6 +107,7 @@ module d5power {
             xnow = Math.max(xnow, 0);
             ynow = Math.max(ynow, 0);
 
+            if(!this._grid.nodeValuable(xnow,ynow)) return null;
             this._grid.setStartNode(xnow, ynow); //2
 
             if (this.isDisplayMode) {
@@ -565,6 +570,12 @@ module d5power {
                     node.links.push(new Link(test, cost));
                 }
             }
+        }
+        
+        public nodeValuable(x:number,y:number):boolean
+        {
+            if(!this._nodes || !this._nodes[x] || !this._nodes[x][y]) return false;
+            return true;
         }
 
         public getNode(x:number, y:number):SilzAstarNode {

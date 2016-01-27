@@ -285,8 +285,7 @@ module d5power
                     (<D5Shape>com).setColor(value.color);
                     (<D5Shape>com).setOffX(value.offX);
                     (<D5Shape>com).setOffY(value.offY);
-                    (<D5Shape>com).setDrawWidth(value.drawWidth);
-                    (<D5Shape>com).setDrawHeight(value.drawHeight);
+                    (<D5Shape>com).setSize(value.width,value.height);
                     (<D5Shape>com).setRadius(value.radius);
                     if(container) container[com.name] = com;
                     break;

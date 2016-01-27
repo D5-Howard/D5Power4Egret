@@ -128,6 +128,10 @@ module d5power {
 		 * 奖励属性
 		 */
 		public static R_PLAYER_PROP:number = 104;
+		/**
+		 * 获得技能
+		 */
+		public static R_SKILL:number = 105;
 		
 		/* !!! 以上内容为D5Rpg内部定义，非必要请不要修改，会影响较多代码 !!! */
 		

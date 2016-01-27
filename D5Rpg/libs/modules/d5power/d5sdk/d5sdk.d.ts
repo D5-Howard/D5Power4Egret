@@ -194,3 +194,21 @@ declare module d5power {
         format(data: any): void;
     }
 }
+/**
+ * Created by Administrator on 2015/4/22.
+ */
+declare module d5power {
+    class D5UIResourceData {
+        private static _resource;
+        private static _resourceLib;
+        static _typeLoop: number;
+        static setupResLib(bitmap: egret.Texture, config: any): void;
+        static getData(name: string): D5UIResourceData;
+        private _resList;
+        private _name;
+        buttonType: number;
+        constructor();
+        setupResource(name: string, uvData: Array<UVData>): void;
+        getResource(id: number): egret.Texture;
+    }
+}

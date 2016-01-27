@@ -1,16 +1,4 @@
 {
-	"close":true,
-	"resourcePlugin":
-	{
-		"configs":[
-		{
-			"configPath":"resource/default.res.json",
-			"relativePath":"resource/"
-		}],
-		"id":"",
-		"library":
-		{
-			"children":[]
-		}
-	}
+	"close":false,
+	"natures":["typescriptProject"]
 }

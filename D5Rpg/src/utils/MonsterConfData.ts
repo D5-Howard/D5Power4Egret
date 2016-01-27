@@ -46,7 +46,7 @@ module d5power {
         /**
          * 怪物贴图
          */
-        public skin:String;
+        public skin:string;
         /**
          * 是否为骨骼动画
          */
@@ -71,9 +71,9 @@ module d5power {
         public format(data:any):void
         {
             this.id = parseInt(data.id);
-            this.name = String(data.name);
+            this.name = data.name;
             this.lv = parseInt(data.lv);
-            this.skin = String(data.skin);
+            this.skin = data.skin;
             this.isDB = parseInt(data.isDB);
         }
 

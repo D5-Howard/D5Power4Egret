@@ -32,31 +32,36 @@ module d5power {
 
         public static setupMissionIcon(res:egret.Texture):void
         {
-            var perW:number = res._bitmapWidth>>2;
+            var perW:number = res._bitmapWidth/5;
             var perH:number = res._bitmapHeight;
             GameObject._missionIcon = new egret.SpriteSheet(res);
 
-            for(var i:number=0;i<4;i++) GameObject._missionIcon.createTexture("mission"+i,i*perW,0,perW,perH,0,0);
+            for(var i:number=0;i<5;i++) GameObject._missionIcon.createTexture("mission"+i,i*perW,0,perW,perH,0,0);
         }
 
-        public static get MissionOver():egret.Texture
+        public static get MissionTalk():egret.Texture
         {
             return GameObject._missionIcon==null ? null : GameObject._missionIcon.getTexture("mission0");
         }
 
-        public static get MissionOver0():egret.Texture
+        public static get MissionOver():egret.Texture
         {
             return GameObject._missionIcon==null ? null : GameObject._missionIcon.getTexture("mission1");
         }
 
-        public static get MissionStart():egret.Texture
+        public static get MissionOver0():egret.Texture
         {
             return GameObject._missionIcon==null ? null : GameObject._missionIcon.getTexture("mission2");
         }
 
-        public static get MissionStart0():egret.Texture
+        public static get MissionStart():egret.Texture
         {
             return GameObject._missionIcon==null ? null : GameObject._missionIcon.getTexture("mission3");
+        }
+
+        public static get MissionStart0():egret.Texture
+        {
+            return GameObject._missionIcon==null ? null : GameObject._missionIcon.getTexture("mission4");
         }
 
         public static MAX_POOL_NUM:number = 100;
@@ -89,7 +94,7 @@ module d5power {
          */
         private _inScreen:boolean;
 
-        private _camp:number;
+        protected _camp:number;
 
         private _deleting:boolean;
 
@@ -102,7 +107,7 @@ module d5power {
 
         protected _missionIcon:egret.Bitmap;
 
-        protected _shadow:egret.Shape;
+        protected _shadow:egret.Bitmap;
 
         private _lastRender:number;
 
@@ -140,6 +145,11 @@ module d5power {
         }
         public get camp():number {
             return this._camp;
+        }
+        
+        public get playFream():number
+        {
+            return this._playFrame;
         }
 
         public hitTestArea(px:number,py:number):boolean
@@ -190,7 +200,11 @@ module d5power {
 
 
             if(this.contains(this._monitor)) this.removeChild(this._monitor);
-            if(this._shadow) this._shadow.graphics.clear();
+            if(this._shadow)
+            {
+                this._shadow.texture=null;
+                if(this.contains(this._shadow)) this.removeChild(this._shadow);
+            }
             if(this._hpBar && this.contains(this._hpBar))this.removeChild(this._hpBar);
             if(this._spBar && this.contains(this._spBar))this.removeChild(this._spBar);
             this._hpBar = null;
@@ -218,12 +232,16 @@ module d5power {
             if(m)
             {
                 var url:string;
-                if(m.type==MissionData.TYPE_GET && m.check(D5Game.me.missionDispatcher))
+                if(m.type==MissionData.TYPE_GET && m.talkNpcFlag && m.talkNpcArr.indexOf(this._data.uid)!=-1&& !m.check(D5Game.me.missionDispatcher))
+                {
+                    this._missionIcon.texture = GameObject.MissionTalk;
+                }
+                else if(m.type==MissionData.TYPE_GET && m.check(D5Game.me.missionDispatcher))
                 {
                     this._missionIcon.texture = GameObject.MissionOver;
                 }else if(m.type==MissionData.TYPE_GET){
                     this._missionIcon.texture = GameObject.MissionOver0;
-                }else if(m.check(D5Game.me.missionDispatcher)){
+                }else if(m.type==0 &&m.isActive){
                     this._missionIcon.texture = GameObject.MissionStart;
                 }else{
                     this._missionIcon.texture = GameObject.MissionStart0;
@@ -260,21 +278,30 @@ module d5power {
             this._drawAction = this.draw;
             //console.log("[GameObject] Res is ready");
             this._spriteSheet = data;
-            if(this._spriteSheet.shadowX!=0 && this._spriteSheet.shadowY!=0)
+//            if(this._spriteSheet.shadowX!=0 && this._spriteSheet.shadowY!=0)
+//            {
+//                if(this._shadow==null)
+//                {
+//                    this._shadow = new egret.Shape();
+//                }else{
+//                    this._shadow.graphics.clear();
+//                }
+//                this._shadow.graphics.lineStyle();
+//                this._shadow.graphics.beginFill(0,0.2);
+//                this._shadow.graphics.drawEllipse(0,0,this._spriteSheet.shadowX,this._spriteSheet.shadowY);
+//                this._shadow.graphics.endFill();
+//                //if(!this.contains(this._shadow)) this.addChild(this._shadow);
+//            }
+            if(this._shadow==null)
             {
-                if(this._shadow==null)
-                {
-                    this._shadow = new egret.Shape();
-                }else{
-                    this._shadow.graphics.clear();
-                }
-                this._shadow.graphics.lineStyle();
-                this._shadow.graphics.beginFill(0,0.2);
-                this._shadow.graphics.drawEllipse(0,0,this._spriteSheet.shadowX,this._spriteSheet.shadowY);
-                this._shadow.graphics.endFill();
-                //if(!this.contains(this._shadow)) this.addChild(this._shadow);
+                this._shadow = new egret.Bitmap(RES.getRes('shadowIcon'));
+                this._shadow.x = -(this._shadow.width>>1);
+                this._shadow.y = -(this._shadow.height>>1);
+                
+            }else{
+                this._shadow.texture = RES.getRes('shadowIcon');
             }
-
+            if(!this.contains(this._shadow)) this.addChild(this._shadow);
             if(!this.contains(this._monitor)) this.addChild(this._monitor);
  
             this.showMissionIcon();
@@ -297,6 +324,7 @@ module d5power {
                 this._nameShower.textColor = D5Game.me.characterData.camp==this._data.camp?0x99ff00 : 0xff0000;
                 this._nameShower.text = this._data.nickname;
                 this._nameShower.x = -(this._nameShower.width>>1);
+                this._nameShower.cacheAsBitmap = true;
                 //this._nameShower.y = -this._monitor.height-this._nameShower.height;
                 this.addChild(this._nameShower);
             }

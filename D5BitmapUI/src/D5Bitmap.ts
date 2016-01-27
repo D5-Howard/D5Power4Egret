@@ -64,7 +64,7 @@ module d5power
                 this.bit = new egret.Bitmap();
             }
             this.bit.texture = data.getResource(0);
-
+            this.setSize(this.bit.$getWidth(),this.bit.$getHeight());
             this.invalidate();
         }
 

@@ -70,5 +70,6 @@ module d5power {
 		public toString():string{
 			return "类型："+this.type+"值："+this.value+"数量："+this.num;
 		}
+
 	}
 }

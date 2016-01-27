@@ -35,7 +35,7 @@ module d5power {
         /**
          * 控制目标
          */
-        protected _target:IGD;
+        protected _target:any;
         /**
          * 控制属性的变量名
          */
@@ -51,7 +51,7 @@ module d5power {
          * @param	attName		挂接的游戏对象属性
          * @param	attMaxName	如果挂接属性有最大值，进行挂接
          */
-        public constructor(target:IGD,attName:string='',attMaxName:string='')
+        public constructor(target:any,attName:string='',attMaxName:string='')
         {
             super();
             this._target = target;

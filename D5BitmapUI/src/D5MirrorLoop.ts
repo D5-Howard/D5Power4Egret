@@ -112,6 +112,10 @@ module d5power
             super.draw();
 
         }
+        public get mBitmap():egret.Bitmap
+        {
+        return this.enter;
+        }
 
 
 

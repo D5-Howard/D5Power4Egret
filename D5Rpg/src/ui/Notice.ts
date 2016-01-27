@@ -35,9 +35,9 @@ module d5power {
         protected  delete_fun:Function;
         protected  _stayTime:number;
 
-        public  STARTY:number = 80;
+        public static  STARTY:number = 80;
 
-        private  noticeMap:Array<any> = [0,0,0,0,0,0];
+        private static noticeMap:Array<any> = [0,0,0,0,0,0];
         private  autoShift:number = 0;
         public constructor(stg:egret.Stage,content:string,dfun:Function=null,config:any=null)
         {
@@ -48,13 +48,13 @@ module d5power {
 
             // 开始自动寻找位置
             var fond:Boolean=false;
-            for(var i:number = 0,j:number=this.noticeMap.length;i<j;i++)
+            for(var i:number = 0,j:number=Notice.noticeMap.length;i<j;i++)
             {
-                if(this.noticeMap[i]==0)
+                if(Notice.noticeMap[i]==0)
                 {
-                    this.noticeMap[i] = this;
+                    Notice.noticeMap[i] = this;
                     this.x = (stg.stageWidth - this.width)*.5;
-                    this.y = this.STARTY+i*(this.height+5);
+                    this.y = Notice.STARTY+i*(this.height+5);
                     fond = true;
                     break;
                 }
@@ -62,12 +62,12 @@ module d5power {
 
             if(!fond)
             {
-                (<d5power.Notice>this.noticeMap[this.autoShift])._stayTime = 0;
-                this.noticeMap[this.autoShift] = this;
+                (<d5power.Notice>Notice.noticeMap[this.autoShift])._stayTime = 0;
+                Notice.noticeMap[this.autoShift] = this;
                 this.x = (stg.stageWidth - this.width)*.5;
-                this.y = this.STARTY+this.autoShift*(this.height+5);
+                this.y = Notice.STARTY+this.autoShift*(this.height+5);
                 this.autoShift++;
-                if(this.autoShift>=this.noticeMap.length) this.autoShift=0;
+                if(this.autoShift>=Notice.noticeMap.length) this.autoShift=0;
             }
 
             stg.addChild(this);
@@ -81,7 +81,7 @@ module d5power {
             var lable:egret.TextField = new egret.TextField();
             
             lable.width = 200;
-            lable.height = 25;
+            lable.height = 30;
             lable.text = content;
             lable.size = config==null || config.size==null ? 16 : config.size;
             lable.textColor = color;
@@ -112,16 +112,20 @@ module d5power {
                     this.removeEventListener(egret.Event.ENTER_FRAME,this.onEnterFrameHander,this);
                     if(this.parent)this.parent.removeChild(this);
                     if(this.delete_fun!=null) this.delete_fun(this);
-                    var id:number = this.noticeMap.indexOf(this);
+                    var id:number = Notice.noticeMap.indexOf(this);
                     if(id!=-1)
                     {
-                        this.noticeMap[id] = 0;
+                        Notice.noticeMap[id] = 0;
                     }
                     return;
                 }
                 return;
             }
             this._stayTime--;
+        }
+        public get height():number
+        {
+            return this.$getHeight();
         }
 
 

@@ -61,6 +61,10 @@ module d5power {
 		 */ 
 		private _id:number = 0;
 		/**
+		 * 地图ID
+		 */
+		private _mapId:number = 0;
+		/**
 		 * 任务名
 		 */ 
 		private _name:string;
@@ -130,6 +134,19 @@ module d5power {
 		 */ 
 		private static MISS:number = 1;
 
+		private _talkNpcFlag:boolean = false;
+
+		public get talkNpcFlag():boolean
+		{
+			return this._talkNpcFlag;
+		}
+
+		private _talkNpcArr:Array<number>;
+
+		public get talkNpcArr():Array<number>
+		{
+			return this._talkNpcArr;
+		}
 
 		private _node:any;
 
@@ -153,6 +170,8 @@ module d5power {
             this._need = [];
             this._give = [];
 			this._active = [];
+			this._talkNpcArr = [];
+			this._mapId = parseInt(data.map);
             this._name = data.name;
 			this._actionType = data.type;
             this._info = data.info;
@@ -214,10 +233,20 @@ module d5power {
 					block.type = parseInt(obj.type);
 					block.value = obj.value;
 					block.num = obj.num;
+					if(block.type == MissionNR.N_TALK_NPC)
+					{
+						this._talkNpcFlag = true;
+						this._talkNpcArr.push(parseInt(block.value));
+					}
 					this._need.push(block);
 				}
 			}
 
+		}
+		public  get mapId():number
+		{
+			if(isNaN(this._mapId)) this._mapId = 0;
+			return this._mapId;
 		}
 		
 		public get complate_script():string{
@@ -456,6 +485,7 @@ module d5power {
 							if(checker.hasChecker(need.type)) this._isactive = this._isactive && checker.publicCheck(need.type,need.value,need.num);
 							break;
 					}
+
 				}
 			}
 			return this._isactive;
@@ -528,6 +558,12 @@ module d5power {
                 case MissionNR.R_MISSION:
                     d5power.D5Game.me.characterData.addMissionById(parseInt(give.Value));
                     break;
+				case MissionNR.R_PLAYER_PROP:
+					d5power.D5Game.me.characterData.addPro(give.value,parseInt(give.num));
+					break;
+				case MissionNR.R_SKILL:
+					d5power.D5Game.me.characterData.learnSkill(parseInt(give.value),parseInt(give.num));
+					break;
             }
         }
         

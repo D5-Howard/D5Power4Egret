@@ -142,6 +142,7 @@ module d5power {
 
         public loadMission():void
         {
+            if(this._work!= GOData.WORK_NPC)return;
             if(D5Game.me.characterData)
             {
                 var m:MissionData;
@@ -152,7 +153,8 @@ module d5power {
                 for(var i:number = 0;i<num;i++)
                 {
                     m = D5Game.me.characterData.getMissionByIndex(i).missionData;
-                    if((m.type==0 &&m.npc_startId == this._uid) ||(m.type>0&&m.npc_CompleteId == this._uid))
+//                    if(m.mapId>0 && m.mapId!= D5Game.me.map.id)continue;
+                    if((m.type==0 &&m.npc_startId == this._uid&&(m.mapId==0||m.mapId== D5Game.me.map.id))||(m.type>0&&m.talkNpcFlag&&m.talkNpcArr.indexOf(this._uid)!=-1) ||(m.type>0&&m.npc_CompleteId == this._uid))
                     {
 
                         if(this._missionIndex==-1) this._missionIndex = i;
@@ -201,6 +203,7 @@ module d5power {
 
         public setAction(action:number):void
         {
+            if(this._action == action) return;
             this._action = action;
             if(this._resStyle!=null) this.setRespath(this._resStyle+'/'+action);
         }
@@ -364,8 +367,9 @@ module d5power {
             this._nickname=null;
             this._respath=null;
             this._resStyle=null;
-            this.$pos.x = 0;
-            this.$pos.y = 0;
+            this.setCamp(0);
+            this.setIsDB(0);
+            this.setPos(0,0)
             this.setJob(0,'','0');
             this.setDisplayer(null);
             this.setAI(null);
@@ -400,7 +404,10 @@ module d5power {
 
         public setDisplayer(data:any):void
         {
-            if(this._displayer!=null && data==null) this._displayer.dispose();
+            if(this._displayer!=null && data==null)
+            {
+                this._displayer.dispose();
+            }
             this._displayer = data;
 
             if(this._displayer)

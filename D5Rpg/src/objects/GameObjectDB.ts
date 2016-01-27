@@ -63,7 +63,7 @@ module d5power {
          */
         private _inScreen:boolean;
 
-        private _camp:number;
+        protected _camp:number;
 
         private _deleting:boolean;
 
@@ -74,7 +74,7 @@ module d5power {
 
         protected _missionIcon:egret.Bitmap;
 
-        protected _shadow:egret.Shape;
+        protected _shadow:egret.Bitmap;
 
         private _lastRender:number;
 
@@ -115,6 +115,11 @@ module d5power {
         public get camp():number {
             return this._camp;
         }
+        
+        public get playFream():number
+        {
+            return 0;
+        }
 
         public hitTestArea(px:number,py:number):boolean
         {
@@ -154,6 +159,16 @@ module d5power {
         private onTextureComplete(data:egret.Texture):void
         {
             this._texture = data;
+            if(this._shadow==null)
+            {
+                this._shadow = new egret.Bitmap(RES.getRes('shadowIcon'));
+                this._shadow.x = -(this._shadow.width>>1);
+                this._shadow.y = -(this._shadow.height>>1);
+            }
+            else{
+                this._shadow.texture = RES.getRes('shadowIcon');
+            }
+            if(!this.contains(this._shadow)) this.addChild(this._shadow);          
             this.createDB();
         }
         private createDB():void
@@ -161,7 +176,11 @@ module d5power {
             var factory:dragonBones.EgretFactory = new dragonBones.EgretFactory();
             factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(this._skeletonData));
             factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(this._texture, this._textureData));
-
+            
+            if(this._armature)
+            {
+                if(this.contains(this._armature.display)) this.removeChild(this._armature.display);
+            }
 
             this._armature = factory.buildArmature(this._skeletonData.armature[0].name);
             //this._armature.enableAnimationCache(30);
@@ -178,8 +197,9 @@ module d5power {
                     }, this);
                     GameObjectDB.flag = true;
                 }
-
             }
+            this.showMissionIcon();
+            this.showPos();
         }
         public dispose():void {
             if (this._spriteSheet)
@@ -211,9 +231,12 @@ module d5power {
                 this._nameShower.text='';
                 this.removeChild(this._nameShower);
             }
+            if(this._shadow)
+            {
+                this._shadow.texture=null;
+                if(this.contains(this._shadow)) this.removeChild(this._shadow);
+            }
 
-
-            if(this._shadow) this._shadow.graphics.clear();
             if(this._hpBar && this.contains(this._hpBar))this.removeChild(this._hpBar);
             if(this._spBar && this.contains(this._spBar))this.removeChild(this._spBar);
             this._hpBar = null;
@@ -241,12 +264,16 @@ module d5power {
             if(m)
             {
                 var url:string;
-                if(m.type==MissionData.TYPE_COMPLATE && m.check(D5Game.me.missionDispatcher))
+                if(m.type==MissionData.TYPE_GET && m.talkNpcFlag && m.talkNpcArr.indexOf(this._data.uid)!=-1&& !m.check(D5Game.me.missionDispatcher))
+                {
+                    this._missionIcon.texture = GameObject.MissionTalk;
+                }
+                else if(m.type==MissionData.TYPE_GET && m.check(D5Game.me.missionDispatcher))
                 {
                     this._missionIcon.texture = GameObject.MissionOver;
-                }else if(m.type==MissionData.TYPE_COMPLATE){
+                }else if(m.type==MissionData.TYPE_GET){
                     this._missionIcon.texture = GameObject.MissionOver0;
-                }else if(m.check(D5Game.me.missionDispatcher)){
+                }else if(m.type==0 &&m.isActive){
                     this._missionIcon.texture = GameObject.MissionStart;
                 }else{
                     this._missionIcon.texture = GameObject.MissionStart0;
@@ -271,8 +298,22 @@ module d5power {
         public setupSkin(res:string)
         {
             this._drawAction = this.drawDB;
-            if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,0);
+            if(this._data.action == Actions.Attack)
+            {
+                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,1);
+                if(this._armature)this._armature.addEventListener(dragonBones.AnimationEvent.COMPLETE, this.onAnimationEvent,this);
+            }
+            else
+            {
+                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,0);
+            }
             this.showMissionIcon();
+        }
+        private onAnimationEvent(evt: dragonBones.AnimationEvent):void
+        {
+            this['atkfun']();
+            this._armature.removeEventListener(dragonBones.AnimationEvent.COMPLETE, this.onAnimationEvent,this);
+            this._data.setAction(Actions.Wait);
         }
 
         public onSpriteSheepReady(data:IDisplayer):void
@@ -282,10 +323,9 @@ module d5power {
 
         private showMissionIcon():void
         {
-            if(this._missionIcon!=null)
-            {
-                this._missionIcon.y= -this._spriteSheet.frameHeight-this._missionIcon.height;
-                this._missionIcon.x = -(this._missionIcon.width>>1);
+            if(this._missionIcon != null && this._armature) {
+                this._missionIcon.y = -this._armature.display.height - this._missionIcon.height;
+                this._missionIcon.x = -(this._missionIcon.width >> 1);
                 if(!this.contains(this._missionIcon)) this.addChild(this._missionIcon);
             }
 
@@ -320,6 +360,10 @@ module d5power {
         {
             this._spBar = bar;
             this.addChild(this._spBar);
+        }
+        public playEffectNow(value:Array<any>):void
+        {
+
         }
 
         public showPos():void

@@ -5,7 +5,7 @@
 		{
 			"name": "d5sdk",
 			"description": "d5sdk",
-			"files": ["D5Power.ts","D5SpriteSheet.ts","IDisplayer.ts","ISpriteSheetWaiter.ts","IUserInfoContainer.ts","IUserInfoDisplayer.ts","UVData.ts"],
+			"files": ["D5Power.ts","D5SpriteSheet.ts","IDisplayer.ts","ISpriteSheetWaiter.ts","IUserInfoContainer.ts","IUserInfoDisplayer.ts","UVData.ts","D5UIResourceData.ts"],
 			"root": "src"
 		}
 	]

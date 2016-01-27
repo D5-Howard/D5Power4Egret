@@ -34,7 +34,7 @@ module d5power {
     {
         private static _pool:Array<any> = new Array<any>();
 
-        public static getInstance(scene:egret.DisplayObjectContainer,skillName:string):UFlyFont
+        public static getInstance(scene:egret.DisplayObjectContainer,skillName:string,value:boolean = true):UFlyFont
         {
             var obj:UFlyFont;
             if(this._pool.length==0)
@@ -45,6 +45,7 @@ module d5power {
             }
             obj.alpha = 1;
             obj._scene = scene;
+            obj.isNumber = value
             obj.buildBuffer(skillName);
             return obj;
         }
@@ -55,7 +56,8 @@ module d5power {
         }
 
         private _scene:egret.DisplayObjectContainer;
-        protected  _shower:egret.Sprite;
+        private isNumber:boolean;
+        protected  _shower:any;
         private  stayTime:number;
         private  xspeed:number;
         private  yspeed:number ;
@@ -74,11 +76,17 @@ module d5power {
         {
             if(this._shower)
             {
-                //if(this._shower.parent)this._shower.parent.removeChild(this._shower);
-                //this._shower = null;
-                this._shower.removeChildren();
+                if(this._shower instanceof NumberBitmap) this._shower.removeChildren();
+                this._shower = null;
             }
-            this._shower = new NumberBitmap(name);
+            if(this.isNumber)
+            {
+                this._shower = new NumberBitmap(name);
+            }
+            else
+            {
+                this._shower = new egret.TextField();
+            }
             this.addChild(this._shower);
 
             this.xspeed = Math.random()>0.5 ? 2 : -2;

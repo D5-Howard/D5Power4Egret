@@ -107,7 +107,7 @@ module d5power{
 					lab.height = this._blockH;
 					(<D5HoverText><any> lab).setFontSize(this._fontSize);
 					(<D5HoverText><any> lab).graphics.beginFill(0xff0000);
-					(<D5HoverText><any> lab).graphics.drawRect(0,0,this.width,20);
+					(<D5HoverText><any> lab).graphics.drawRect(0,0,this._blockW,20);
 					(<D5HoverText><any> lab).setHover(this._hoverColor,this._hoverAlpha);
 				}else{
 					//(<D5HoverText><any> lab).autoGrow();

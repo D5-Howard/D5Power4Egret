@@ -41,7 +41,9 @@ module d5power {
          * 游戏资源的保存目录
          */ 
         public static ASSET_PATH:string = 'resource/assets';
-        
+
+        private _effectList:Array<EffectObject>;
+        private _effectMackerList:Array<EffectMakcer>;
         private _dataList:Array<IGD>;
         protected _screenList:Array<IGD>;
         private _g: D5Gravity;
@@ -57,7 +59,7 @@ module d5power {
         
         public fightController:IFightController;
 
-        private _timer:number;
+        protected _timer:number;
         private _readyBack:Function;
         protected _map:IMap;
         protected _player:IGD;
@@ -67,7 +69,7 @@ module d5power {
         private _screenW:number;
         private _screenH:number;
         private _lastZorder:number=0;
-
+ 
         protected _firstEnter:boolean = true;
 
         /**
@@ -91,10 +93,21 @@ module d5power {
             return D5Game._me;
         }
         
+        /**
+         * 打开特效系统
+         */
+        public static openEffectSystem():void
+        {
+            D5ConfigCenter.effectSwitch= true;
+            if(D5ConfigCenter.my==null) return;
+            D5ConfigCenter.my.loadEffect();
+        }
+        
         public runScript(url:string):void
         {
 
         }
+        
 
         public constructor(mapid:number,startx:number,starty:number,onReady:Function = null) {
             super();
@@ -119,8 +132,8 @@ module d5power {
             this._touch_layer.touchEnabled=true;
 
 
-            this.addChild(this._container_map);
             this.addChild(this._container_far);
+            this.addChild(this._container_map);
             this.addChild(this._container_bottom);
             this.addChild(this._container);
             this.addChild(this._container_top);
@@ -128,7 +141,8 @@ module d5power {
 
             this._dataList = [];
             this._screenList = [];
-
+            this._effectList = [];
+            this._effectMackerList = [];
             this.addEventListener(egret.Event.ADDED_TO_STAGE, this.install, this);
             /**
              * 重力跳跃测试
@@ -143,6 +157,16 @@ module d5power {
                         }
                     }
               )
+        }
+        
+        public get topLayer():Layer
+        {
+            return this._container_top;
+        }
+        
+        public get bottomLayer():Layer
+        {
+            return this._container_bottom;
         }
 
         public openGravity():void
@@ -275,6 +299,10 @@ module d5power {
         {
 
         }
+        public reLive():void
+        {
+
+        }
         public get timer():number
         {
             return this._timer;
@@ -299,6 +327,9 @@ module d5power {
         public get dataList():Array<IGD> {
             return this._dataList;
         }
+        public get sceneList():Array<IGD> {
+            return this._screenList
+        }
 
         public get player():IGD {
             return this._player;
@@ -318,6 +349,11 @@ module d5power {
         public setPlayer(data:IGD){
             this._player = data;
             this.add2Screen(data);
+        }
+        
+        public addEffect(v:EffectObject):void
+        {
+            this._effectList.push(v);
         }
 
         public addObject(data:IGD):void {
@@ -339,6 +375,7 @@ module d5power {
             for(i=0,j=this._screenList.length;i<j;i++)
             {
                 igd = this._screenList[i];
+                if(igd.work==GOData.WORK_NORMAL)continue;
                 if(igd.work!=GOData.WORK_DOOR && igd!=this._player && igd.displayer.hitTestArea(px,py)) testList.push(igd);
             }
 
@@ -385,7 +422,7 @@ module d5power {
                 }
                 else
                 {
-                    data.setDisplayer(data.work == GOData.WORK_DOOR? DoorObject.getDoor() : GameObject.getInstance());
+                    data.setDisplayer(data.work == GOData.WORK_DOOR? DoorObject.getDoor() :data.isDB==1?GameObjectDB.getInstance(): GameObject.getInstance());
                 }
                 this._screenList.push(data);
                 this._container.addChild(<egret.DisplayObject><any>data.displayer);
@@ -415,7 +452,6 @@ module d5power {
             this._startY = toy;
             this.enterMap(tomap);
         }
-
         /**
          * 创建NPC
          * @param    s            位图资源名
@@ -508,12 +544,23 @@ module d5power {
 
 
             var length:number = data.npc.length;
-            for(var i:number = 0;i < length;i++){
+            for(var i:number = 0;i < length;i++) {
                 var npc:any = data.npc[i];
                 var npcData:NpcData = D5ConfigCenter.my.getNpcConf(npc.uid);
                 var obj:GOData = GOData.getInstance();
                 obj.setDirection(Direction.Down);
-                obj.setRespath(npcData? npcData.skin:D5Game.RES_SERVER+D5Game.ASSET_PATH+"/mapRes/"+npc.res);
+                if (npcData)
+                {
+                    obj.setIsDB(npcData.isDB);
+                    if (npcData.isDB == 1) {
+                        obj.setResStyle(npcData.skin);
+                    } else {
+                        obj.setRespath(npcData ? npcData.skin : D5Game.RES_SERVER + D5Game.ASSET_PATH + "/mapRes/" + npc.res);
+                    }
+                }else
+                {
+                    obj.setRespath(D5Game.RES_SERVER + D5Game.ASSET_PATH + "/mapRes/" + npc.res);
+                }
                 obj.setNickname(npc.name);
                 obj.setPos(npc.posx,npc.posy);
                 obj.setUid(npc.uid);
@@ -533,6 +580,17 @@ module d5power {
                 obj.setPos(door.posx,door.posy);
                 obj.setWork(GOData.WORK_DOOR);
                 this.addObject(obj);
+            }
+            if(data.movie)
+            {
+                for(var i:number = 0;i < data.movie.length;i++){
+                    var movie:any = data.movie[i];
+                    var obj:GOData = GOData.getInstance();
+                    obj.setDirection(Direction.Down);
+                    obj.setRespath(D5Game.RES_SERVER+D5Game.ASSET_PATH+"/mapRes/"+movie.res);
+                    obj.setPos(movie.posx,movie.posy);
+                    this.addObject(obj);
+                }
             }
             if(data.event)
             {
@@ -629,8 +687,19 @@ module d5power {
             this.removeEventListener(egret.Event.ENTER_FRAME, this._runAction, this);
         }
 
-        private run(e:egret.Event = null):void {
+        public createEffectMacker(name:string,keep:number=0,posx:number=0,posy:number=0,doer:IGD=null,target:IGD=null,skill:number=0):void
+        {
+            var data:EffectData = D5ConfigCenter.my.getEffectData(name);
+            if(data==null)
+            {
+                trace("[D5Game] createEffectMacker: 未找到名为 "+name+" 的特效配置");
+                return;
+            }
+            var effect:d5power.EffectMakcer = new d5power.EffectMakcer(data,keep,posx,posy,doer,target,skill);
+            this._effectMackerList.push(effect);
+        }
 
+        private run(e:egret.Event = null):void {
             this._timer = egret.getTimer();
 
             this._map.render(false);
@@ -643,7 +712,26 @@ module d5power {
             {
                 if(this._screenList[i].deleting || !this._screenList[i].inScreen) this._screenList.splice(i,1);
             }
-
+            
+            for(i=this._effectMackerList.length-1;i>=0;i--)
+            {
+                if(this._effectMackerList[i].deleting)
+                {
+                    this._effectMackerList.splice(i,1);
+                }else{
+                    this._effectMackerList[i].render(this._timer);
+                }
+            }
+            
+            for(i=this._effectList.length-1;i>=0;i--)
+            {
+                if(this._effectList[i].deleting)
+                {
+                    this._effectList.splice(i,1);
+                }else{
+                    this._effectList[i].render();
+                }
+            }
 
             var needOrder:Boolean = this._timer - this._lastZorder > this._camera.zorderSpeed;
 
@@ -701,11 +789,14 @@ module d5power {
             var i:number;
             for (i = this._screenList.length - 1; i >= 0; i--) this.remove4ScreenByIndex(i);
             for (i = this._dataList.length - 1; i >= 0; i--) this.removeObject(i);
-
-
+            this.clear();
             this._player=null;
             this._camera.setFocus(null);
             this.stopMusic();
+        }
+        public clear():void
+        {
+
         }
 
         private onResize(e:egret.Event):void {

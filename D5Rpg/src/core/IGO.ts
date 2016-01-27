@@ -43,5 +43,6 @@ module d5power {
         hitTestArea(px:number,py:number):boolean;
 		showMissionStatus(index:number):void;
 		camp:number;
+        playFream:number;
 	}
 }

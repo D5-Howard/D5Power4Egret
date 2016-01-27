@@ -30,6 +30,10 @@
 module d5power {
 	export class EffectImplement
 	{
+        public static TYPE_FREAM:number = 0;
+        public static TYPE_IMG:number = 1;
+        
+        public type:number;
 		/**
 		 * 播放起始帧
 		 */ 
@@ -37,7 +41,7 @@ module d5power {
 		/**
 		 * 主素材资源
 		 */ 
-		public res:String;
+		public res:string;
 		/**
 		 * 不同方向的坐标配置
 		 */ 
@@ -211,8 +215,10 @@ module d5power {
 		public format(xml:any):void
 		{
 			this.startFrame = xml.startFrame;
-			this.res = String(xml.res).replace(/\\/g,"/");
+			this.res = <string>(xml.res).replace(/\\/g,"/");
+            this.type = this.res.substr(this.res.lastIndexOf('.'))=='.json' ? EffectImplement.TYPE_FREAM : EffectImplement.TYPE_IMG;
 			this.playSpeed = xml.playSpeed;
+			if(this.playSpeed==0)this.playSpeed = 33;
 			this.rotationSpeed = xml.rotationSpeed;
 			this.sonSpeed = xml.sonSpeed;
 			this.sonFrame = xml.sonFrame;
@@ -244,7 +250,14 @@ module d5power {
 			this.zoom_high = Number(xml.zoom_high);
 			this.alpha_low = Number(xml.alpha_low);
 			this.alpha_high = Number(xml.alpha_high);
-
+            
+            this._directionPos = [];
+			this._directionMaps = [];
+			this._moveAngleMaps = [];
+			this._sonAngleMaps = [];
+			this._mirrorMaps = [];
+			this._rotationMaps = [];
+            
 			for(var i:number=0,j:number=xml.directionMap.length;i<j;i++)
 			{
 				var dir:any = xml.directionMap[i];
@@ -256,5 +269,41 @@ module d5power {
 				this._mirrorMaps[parseInt(dir.direction)] = parseInt(dir.mirror);
 			}
 		}
+        
+        public getMoveAngle(dir:number):number
+        {
+            if(this._moveAngleMaps==null || this._moveAngleMaps[dir]==null) return 0;
+            return this._moveAngleMaps[dir];
+        }
+        
+        public getSonAngle(dir:number):number
+        {
+            if(this._sonAngleMaps==null || this._sonAngleMaps[dir]==null) return 0;
+            return this._sonAngleMaps[dir];
+        }
+        
+        public getRotation(dir:number):number
+		{
+			if(this._rotationMaps[dir]==null) return 0;
+			return this._rotationMaps[dir];
+		}
+		
+		public getDirectionPos(dir:number):Array<any>
+		{
+			if(this._directionPos[dir]==null) return [0,0];
+			return this._directionPos[dir];
+		}
+        
+        public getDirectionMap(dir:number):number
+        {
+            if(this._directionMaps[dir]==null) return 0;
+            return this._directionMaps[0];
+        }
+        
+        public getDirectionMirror(dir:number):number
+        {
+            if(this._mirrorMaps[dir]==null) return 0;
+            return this._mirrorMaps[dir];
+        }
 	}
 }

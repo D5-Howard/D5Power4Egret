@@ -166,9 +166,15 @@ module d5power
 
         setHp(value:number):void;
 
+        sp:number;
+
+        setSp(value:number):void;
+
         maxHp:number;
 
         setMaxHp(value:number):void;
+        
+        setMaxSp(value:number):void;
         
         inG: boolean;
         

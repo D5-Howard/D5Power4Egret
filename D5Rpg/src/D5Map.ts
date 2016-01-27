@@ -263,19 +263,24 @@ module d5power {
             var tile: egret.Point = this.Postion2Tile(px,py);
             return this._alphaArr[tile.y] && this._alphaArr[tile.y][tile.x]==D5Map.BIN_ALPHA_VALUE;
         }
-
+        
+        /**
+         * 尝试寻找周围可以通过的位置
+         * 进行若干次尝试，如果没有发现，则返回null，请注意容错判断
+         */
         public getPointAround(center:egret.Point,from:egret.Point,r:number):egret.Point
         {
+            if(!center || !from) return null;
             var i:number = 0;
-            var max:number = 10;
+            var max:number = 5;
             var step:number = Math.PI*2/max;
             var gotoP:egret.Point = new egret.Point();
             var angle:number = GMath.getPointAngle(center.x-from.x,center.y-from.y)+(Math.random()>.5 ? 1 : -1)*Math.PI/8;
             while(i<max)
             {
                 var n:number = step*i+angle;
-                gotoP.x = center.x-r*Math.cos(n);
-                gotoP.y = center.y-r*Math.sin(n);
+                gotoP.x = Math.round(center.x-r*Math.cos(n));
+                gotoP.y = Math.round(center.y-r*Math.sin(n));
                 if(this.PointCanMove(gotoP,from))
                 {
                     return gotoP;
