@@ -107,8 +107,16 @@ module d5power
                 }
 
             }
-
             super.draw();
+        }
+        public dispose():void
+        {
+            if(this.bit)
+            {
+                if(this.bit.parent)this.bit.parent.removeChild(this.bit);
+                this.bit.texture = null;
+                this.bit = null;
+            }          
         }
 
     }

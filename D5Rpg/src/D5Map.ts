@@ -496,6 +496,7 @@ module d5power {
             this._tiledLayerData = null;
             this._tiledResource = null;
             this._nowName = '';
+            this. _tileFormat = '.jpg';
         }
 
         private _nowName='';

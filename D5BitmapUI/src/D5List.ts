@@ -84,8 +84,8 @@ module d5power{
 			this.flushFormat();
 		}
 		
-		public unsetup(e:Event=null):void{
-			//super.unsetup(e);
+		public dispose():void{
+			if(this.parent)this.parent.removeChild(this);
 			this.removeEventListener(egret.TouchEvent.TOUCH_MOVE,this.onMove,this);
 			this.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.onClick,this);
 			this.removeEventListener(egret.Event.ADDED_TO_STAGE,this.onAdd,this);

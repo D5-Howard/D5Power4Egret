@@ -105,5 +105,15 @@ module d5power {
             }
             super.draw();
 		}
+		public dispose():void
+		{
+		    this.data = null;	    
+		    if(this._box)
+            {
+                if(this._box.parent)this._box.parent.removeChild(this._box);
+                this._box.dispose();
+        		    this._box = null;
+            }
+		}
 	}
 }

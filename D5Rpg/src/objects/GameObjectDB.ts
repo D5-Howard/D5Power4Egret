@@ -298,22 +298,26 @@ module d5power {
         public setupSkin(res:string)
         {
             this._drawAction = this.drawDB;
-            if(this._data.action == Actions.Attack)
+            if(this._data.action == Actions.Wait || this._data.action == Actions.Run)
             {
-                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,1);
-                if(this._armature)this._armature.addEventListener(dragonBones.AnimationEvent.COMPLETE, this.onAnimationEvent,this);
+                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,0);
             }
             else
             {
-                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,0);
+                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,1);
+                if(this._armature)this._armature.addEventListener(dragonBones.AnimationEvent.COMPLETE, this.onAnimationEvent,this);             
             }
             this.showMissionIcon();
         }
         private onAnimationEvent(evt: dragonBones.AnimationEvent):void
         {
-            this['atkfun']();
+            if(this._data.action == Actions.Attack)
+            {
+                this['atkfun']();
+                this._data.setAction(Actions.Wait);
+            }
             this._armature.removeEventListener(dragonBones.AnimationEvent.COMPLETE, this.onAnimationEvent,this);
-            this._data.setAction(Actions.Wait);
+            
         }
 
         public onSpriteSheepReady(data:IDisplayer):void

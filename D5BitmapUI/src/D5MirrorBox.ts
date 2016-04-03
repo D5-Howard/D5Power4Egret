@@ -30,6 +30,9 @@ module d5power
 {
     export class D5MirrorBox extends D5Component
     {
+        public cutX:number = 0;
+        public cutY:number = 0;
+        
         private lt:egret.Bitmap;
         private t:egret.Bitmap;
         private rt:egret.Bitmap;
@@ -44,6 +47,58 @@ module d5power
         {
             super();
         }
+        private loadResource(name:string):void
+        {
+            RES.getResByUrl(name,this.onComplate,this);
+        }
+        private onComplate(data:egret.Texture):void
+        {
+             var sheet:egret.SpriteSheet = new egret.SpriteSheet(data);
+             sheet.createTexture('0',0,0,this.cutX,this.cutY);
+             sheet.createTexture('1',this.cutX,0,data.textureWidth - this.cutX,this.cutY);
+             sheet.createTexture('2',0,this.cutY,this.cutX,data.textureHeight - this.cutY);
+             sheet.createTexture('3',this.cutX,this.cutY,data.textureWidth - this.cutX,data.textureHeight - this.cutY);
+
+             if(this.lt==null)this.lt = new egret.Bitmap();
+            this.lt.texture = sheet.getTexture('0');
+
+            if(this.t==null)this.t = new egret.Bitmap();
+            this.t.texture = sheet.getTexture('1');
+            this.t.fillMode = egret.BitmapFillMode.REPEAT;
+
+            if(this.rt==null)this.rt = new egret.Bitmap();
+            this.rt.texture = sheet.getTexture('0');
+            this.rt.scaleX = -1;
+
+            if(this.l==null)this.l = new egret.Bitmap();
+            this.l.texture = sheet.getTexture('2');
+            this.l.fillMode = egret.BitmapFillMode.REPEAT;
+
+            if(this.m==null)this.m = new egret.Bitmap();
+            this.m.texture = sheet.getTexture('3');
+            this.m.fillMode = egret.BitmapFillMode.REPEAT;
+
+            if(this.r==null)this.r = new egret.Bitmap();
+            this.r.texture = sheet.getTexture('2');
+            this.r.scaleX = -1;
+            this.r.fillMode = egret.BitmapFillMode.REPEAT;
+
+            if(this.lb==null)this.lb = new egret.Bitmap();
+            this.lb.texture = sheet.getTexture('0');
+            this.lb.scaleY=-1;
+
+            if(this.b==null)this.b = new egret.Bitmap();
+            this.b.texture = sheet.getTexture('1');
+            this.b.scaleY=-1;
+            this.b.fillMode = egret.BitmapFillMode.REPEAT;
+
+            if(this.rb==null)this.rb = new egret.Bitmap();
+            this.rb.texture = sheet.getTexture('0');
+            this.rb.scaleX=this.rb.scaleY=-1;
+            this.rb.fillMode = egret.BitmapFillMode.REPEAT;
+            
+            this.invalidate();
+        }
 
         public setSkin(name:string):void
         {
@@ -53,6 +108,7 @@ module d5power
             if(data==null)
             {
                 trace("[D5MirrorBox]No Resource"+name);
+                this.loadResource(name);
                 return;
             }
             if(this.lt==null)this.lt = new egret.Bitmap();
@@ -132,6 +188,63 @@ module d5power
         public get mBitmap():egret.Bitmap
         {
             return this.m;
+        }
+        public dispose():void
+        {
+            if(this.lt)
+			{
+				if(this.lt.parent) this.lt.parent.removeChild(this.lt);
+				this.lt.texture = null;
+				this.lt = null;
+			}
+			if(this.t)
+			{
+				if(this.t.parent) this.t.parent.removeChild(this.t);
+				this.t.texture = null;
+				this.t = null;
+			}
+			if(this.rt)
+			{
+				if(this.rt.parent) this.rt.parent.removeChild(this.rt);
+				this.rt.texture = null;
+				this.rt = null;
+			}
+			if(this.l)
+			{
+				if(this.l.parent) this.l.parent.removeChild(this.l);
+				this.l.texture = null;
+				this.l = null;
+			}
+			if(this.m)
+			{
+				if(this.m.parent) this.m.parent.removeChild(this.m);
+				this.m.texture = null;
+				this.m = null;
+			}
+			if(this.r)
+			{
+				if(this.r.parent) this.r.parent.removeChild(this.r);
+				this.r.texture = null;
+				this.r = null;
+			}
+			if(this.lb)
+			{
+				if(this.lb.parent) this.lb.parent.removeChild(this.lb);
+				this.lb.texture = null;
+				this.lb = null;
+			}
+			if(this.b)
+			{
+				if(this.b.parent) this.b.parent.removeChild(this.b);
+				this.b.texture = null;
+				this.b = null;
+			}
+			if(this.rb)
+			{
+				if(this.rb.parent) this.rb.parent.removeChild(this.rb);
+				this.rb.texture = null;
+				this.rb = null;
+			}
         }
 
     }

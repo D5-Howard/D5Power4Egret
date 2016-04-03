@@ -30,6 +30,10 @@ module d5power
 {
     export class D5Button extends D5Component
     {
+        public type:number = 4;
+        
+        private _sheet:egret.SpriteSheet;
+        
         private a:egret.Bitmap;
 
         private data:D5UIResourceData;
@@ -122,18 +126,71 @@ module d5power
         {
             this.touchEnabled = b;
             if(b) {
-                this.a.texture = this.data.getResource(0);
-            }
-            else{
-                if(this.data.buttonType==2)
+                if(this._sheet==null)
                 {
                     this.a.texture = this.data.getResource(0);
                 }
                 else
                 {
-                    this.a.texture = this.data.getResource(3);
+                    this.a.texture = this._sheet.getTexture('0');
+                }
+                
+            }
+            else{
+                if(this.type==2)
+                {
+                    if(this._sheet==null)
+                    {
+                        this.a.texture = this.data.getResource(0);
+                    }
+                    else
+                    {
+                        this.a.texture = this._sheet.getTexture('0');
+                    }
+                }
+                else
+                {
+                    if(this._sheet==null)
+                    {
+                        this.a.texture = this.data.getResource(3);
+                    }
+                    else
+                    {
+                        this.a.texture = this._sheet.getTexture('3');
+                    }
                 }
             }
+            this.invalidate();
+        }
+         private loadResource(name:string):void
+        {
+            RES.getResByUrl(name,this.onComplate,this);
+        }
+        private onComplate(data:egret.Texture):void
+        {
+            this._sheet = new egret.SpriteSheet(data);
+            if(this.type = 4)
+            {
+               this._sheet.createTexture('0',0,0,data.textureWidth/4,data.textureHeight); 
+               this._sheet.createTexture('1',data.textureWidth/4,0,data.textureWidth/4,data.textureHeight); 
+               this._sheet.createTexture('2',data.textureWidth/2,0,data.textureWidth/4,data.textureHeight); 
+               this._sheet.createTexture('3',data.textureWidth*3/4,0,data.textureWidth/4,data.textureHeight); 
+            }
+            else
+            {
+                this._sheet.createTexture('0',0,0,data.textureWidth/2,data.textureHeight); 
+                this._sheet.createTexture('1',data.textureWidth/2,0,data.textureWidth/2,data.textureHeight); 
+            }
+                     
+            if(this.a==null)this.a = new egret.Bitmap();
+            this.a.texture = this._sheet.getTexture('0');
+            
+            this.touchEnabled = true;
+            this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.btnDown,this);
+            this.addEventListener(egret.TouchEvent.TOUCH_END,this.btnUp,this);
+            this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.btnClick,this);
+            this.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE,this.btnOutSide,this);
+
             this.invalidate();
         }
 
@@ -145,9 +202,10 @@ module d5power
             if(this.data==null)
             {
                 trace("[D5Button]No Resource"+name);
+                this.loadResource(name);
                 return;
             }
-
+            this.type = this.data.buttonType;
             if(this.a==null)this.a = new egret.Bitmap();
             this.a.texture = this.data.getResource(0);
 
@@ -168,23 +226,44 @@ module d5power
 
         private btnDown(evt:egret.TouchEvent):void
         {
-            if(this.data.buttonType==2) {
-                this.a.texture = this.data.getResource(1);
-            }else{
-                this.a.texture = this.data.getResource(2);
+            if(this.type == 2) {
+                if(this._sheet == null) {
+                    this.a.texture = this.data.getResource(1);
+                }
+                else {
+                    this.a.texture = this._sheet.getTexture('1');
+                }
+            } else {
+                if(this._sheet == null) {
+                    this.a.texture = this.data.getResource(2);
+                }
+                else {
+                    this.a.texture = this._sheet.getTexture('2');
+                }
             }
             this.invalidate();
         }
 
         private btnUp(evt:egret.TouchEvent):void
         {
-            this.a.texture = this.data.getResource(0);
+            if(this._sheet==null)
+            {
+                this.a.texture = this.data.getResource(0);
+            }
+            else {
+                this.a.texture = this._sheet.getTexture('0');
+            }
   
             this.invalidate();
         }
         private btnOutSide(evt:egret.TouchEvent): void
         {
-            this.a.texture = this.data.getResource(0);
+            if(this._sheet == null) {
+                this.a.texture = this.data.getResource(0);
+            }
+            else {
+                this.a.texture = this._sheet.getTexture('0');
+            }
             this.invalidate();
         }
         
@@ -222,6 +301,37 @@ module d5power
         public  setCallback(fun:Function):void
         {
             this._callback2 = fun;
+        }
+        public dispose():void
+        {
+            this.data = null;
+            if(this._callback2)
+            {
+                this._callback2 = null;
+            }
+            if(this.a)
+            {
+                if(this.a.parent)this.a.parent.removeChild(this.a);
+                this.a.texture = null;
+                this.a = null;
+            }
+            
+            if(this._icon)
+            {
+                if(this._icon.parent)this._icon.parent.removeChild(this._icon);
+                this._icon.dispose();
+                this._icon = null;
+            }
+            if(this._lable)
+            {
+                if(this._lable.parent)this._lable.parent.removeChild(this._lable);
+                this._lable.dispose();
+                this._lable = null;
+            }
+            this.removeEventListener(egret.TouchEvent.TOUCH_BEGIN,this.btnDown,this);
+            this.removeEventListener(egret.TouchEvent.TOUCH_END,this.btnUp,this);
+            this.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.btnClick,this);
+            this.removeEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE,this.btnOutSide,this);
         }
 
 

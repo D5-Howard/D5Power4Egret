@@ -235,6 +235,14 @@ module d5power {
             this._workMode = value;
             this.invalidate();
         }
+        public dispose():void
+        {
+            if(this._shape)
+            {
+                if(this._shape.parent)this._shape.parent.removeChild(this._shape);
+                this._shape = null;
+            }
+        }
 
 
     }

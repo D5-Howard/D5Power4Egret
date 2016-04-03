@@ -185,5 +185,6 @@ module d5power {
 			 this._editorBG.graphics.drawRect(0,0,this._maxWidth,this._usedHeight<20 ? 20 : this._usedHeight);
 			 this._editorBG.graphics.endFill();
 		}
+		
 	}
 }

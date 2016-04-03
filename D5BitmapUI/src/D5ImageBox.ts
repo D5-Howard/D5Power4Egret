@@ -34,8 +34,6 @@ module d5power {
 
         private spr: egret.Sprite;
 
-        private _resource: egret.SpriteSheet;
-
         private _name: string;
 
         protected _logo: egret.Bitmap;
@@ -164,5 +162,28 @@ module d5power {
         public setId(value: number): void {
             this._id = value;
         }
+        public dispose():void
+        {	
+            if(this.spr)
+			{
+				if(this.spr.parent) this.spr.parent.removeChild(this.spr);
+				this.spr = null;
+			}
+			
+			if(this._logo)
+			{
+				
+				if(this._logo.parent) this._logo.parent.removeChild(this._logo);
+				this._logo.texture = null;
+				this._logo = null;
+			}
+			
+			if(this.numShower)
+			{
+    			if(this.numShower.parent) this.numShower.parent.removeChild(this.numShower);
+				this.numShower.dispose();				
+				this.numShower = null;
+			}
+		}
     }
 }

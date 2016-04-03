@@ -30,7 +30,7 @@ module d5power
 {
     export class D5Component extends egret.Sprite 
     {
-        public static autoRelease:boolean=true;
+        public static autoRelease:boolean=false;
 
         protected _w:number;
         protected _h:number;
@@ -102,6 +102,10 @@ module d5power
             {
                 case "D5Window":
                     com = new d5power.D5Window();
+                    (<D5Window>com).x1 = parseInt(value.x1);
+                    (<D5Window>com).y1 = parseInt(value.y1);
+                    (<D5Window>com).x2 = parseInt(value.x2);
+                    (<D5Window>com).y2 = parseInt(value.y2);
                     com.name = value.name;
                     com.setSkin(value.skinId);
                     com.x = value.x;
@@ -120,6 +124,8 @@ module d5power
                 case "D5MirrorBox":
                     com = new d5power.D5MirrorBox();
                     com.name = value.name;
+                    (<D5MirrorBox>com).cutX = parseInt(value.cutX);
+                    (<D5MirrorBox>com).cutY = parseInt(value.cutY);
                     com.setSkin(value.skinId);
                     com.x = value.x;
                     com.y = value.y;
@@ -136,6 +142,7 @@ module d5power
                     break;
                 case "D5Button":
                     com = new d5power.D5Button();
+                    (<D5Button>com).type = parseInt(value.type);
                     com.name = value.name;
                     com.setSkin(value.skinId);
                     (<D5Button>com).setSound(value.soundDown)
@@ -162,6 +169,8 @@ module d5power
                 case "D5MirrorLoop":
                     com = new d5power.D5MirrorLoop();
                     com.name = value.name;
+                    (<D5MirrorLoop>com)._mode = value.workmode;
+                    (<D5MirrorLoop>com)._cutSize = value.cutsize;
                     com.setSkin(value.skinId);
                     com.x = value.x;
                     com.y = value.y;
