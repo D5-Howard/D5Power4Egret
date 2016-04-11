@@ -442,6 +442,14 @@ module d5power
         public clear(): void 
         {
         }
+        public dispose():void
+        {
+            if(this._textField)
+            {
+                if(this._textField.parent)this._textField.parent.removeChild(this._textField);
+                this._textField = null;
+            }
+        }
         
 	}
 }

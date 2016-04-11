@@ -35,13 +35,58 @@ module d5power
         private enter:egret.Bitmap;
 
         private after:egret.Bitmap;
+        
+        public _mode:number = 0;
 
+        public _cutSize:number = 0;
 
         public constructor()
         {
             super();
         }
+        private loadResource(name:string):void
+        {
+            RES.getResByUrl(name,this.onComplate,this);
+        }
+        public setRes(data:egret.Texture):void
+        {
+            this.onComplate(data);
+        }
+        private onComplate(data:egret.Texture):void
+        {
+            var sheet:egret.SpriteSheet = new egret.SpriteSheet(data);
+            if(this._mode==0)
+            {
+                sheet.createTexture('0',0,0,this._cutSize,data.textureHeight);
+                sheet.createTexture('1',this._cutSize,0,data.textureWidth - this._cutSize,data.textureHeight);
+                if(this.front==null)this.front = new egret.Bitmap();
+                this.front.texture = sheet.getTexture('0');
 
+                if(this.enter==null)this.enter = new egret.Bitmap();
+                this.enter.texture = sheet.getTexture('1');
+                this.enter.fillMode = egret.BitmapFillMode.REPEAT;
+
+                if(this.after==null)this.after = new egret.Bitmap();
+                this.after.texture = sheet.getTexture('0');
+                this.after.scaleX = -1;
+            }
+            else
+            {
+                sheet.createTexture('0',0,0,data.textureWidth,this._cutSize);
+                sheet.createTexture('1',0,this._cutSize,data.textureWidth,data.textureHeight- this._cutSize);
+                if(this.front==null)this.front = new egret.Bitmap();
+                this.front.texture = sheet.getTexture('0');
+
+                if(this.enter==null)this.enter = new egret.Bitmap();
+                this.enter.texture = sheet.getTexture('1');
+                this.enter.fillMode = egret.BitmapFillMode.REPEAT;
+
+                if(this.after==null)this.after = new egret.Bitmap();
+                this.after.texture = sheet.getTexture('0');
+                this.after.scaleY = -1;
+            }
+            this.invalidate();
+        }
         public setSkin(name:string):void
         {
             if(this._nowName == name) return;
@@ -50,11 +95,13 @@ module d5power
             if(data==null)
             {
                 trace("[D5MirrorLoop]No Resource"+name);
+                this.loadResource(name);
                 return;
             }
 
             if(D5UIResourceData._typeLoop == 0)   //x轴D5UIResourceData._typeLoop == 0
             {
+                this._mode = 0;
                 if(this.front==null)this.front = new egret.Bitmap();
                 this.front.texture = data.getResource(0);
 
@@ -66,7 +113,7 @@ module d5power
                 this.after.texture = data.getResource(0);
                 this.after.scaleX = -1;
             }else{
-
+                this._mode = 1;
                 if(this.front==null)this.front = new egret.Bitmap();
                 this.front.texture = data.getResource(0);
 
@@ -87,7 +134,7 @@ module d5power
         {
             if(this.front==null)
             {
-
+                return;
             }else{
 
                 if(!this.contains(this.front)) {
@@ -98,7 +145,7 @@ module d5power
                 }
             }
 
-            if(D5UIResourceData._typeLoop == 0)
+            if(this._mode == 0)
             {
                 this.enter.x = this.front.width;
                 this.enter.width = this._w - this.front.width * 2;
@@ -114,10 +161,30 @@ module d5power
         }
         public get mBitmap():egret.Bitmap
         {
-        return this.enter;
+            return this.enter;
         }
-
-
+        public dispose():void
+        {
+            if(this.front)
+			{
+				if(this.front.parent) this.front.parent.removeChild(this.front);
+				this.front.texture = null;
+				this.front = null;
+			}
+			if(this.enter)
+			{
+				if(this.enter.parent) this.enter.parent.removeChild(this.enter);
+				this.enter.texture = null;
+				this.enter = null;
+			}
+			if(this.after)
+			{
+				if(this.after.parent) this.after.parent.removeChild(this.after);
+				this.after.texture = null;
+				this.after = null;
+			}
+            
+        }
 
     }
 }

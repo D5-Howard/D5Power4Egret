@@ -95,6 +95,7 @@ module d5power {
         protected _texture:any;
 
         protected _armature:dragonBones.Armature;
+        protected _factory:dragonBones.EgretFactory;
         /**
          * @param    ctrl    控制器
          */
@@ -173,16 +174,16 @@ module d5power {
         }
         private createDB():void
         {
-            var factory:dragonBones.EgretFactory = new dragonBones.EgretFactory();
-            factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(this._skeletonData));
-            factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(this._texture, this._textureData));
+            this._factory = new dragonBones.EgretFactory();
+            this._factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(this._skeletonData));
+            this._factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(this._texture, this._textureData));
             
             if(this._armature)
             {
                 if(this.contains(this._armature.display)) this.removeChild(this._armature.display);
             }
 
-            this._armature = factory.buildArmature(this._skeletonData.armature[0].name);
+            this._armature = this._factory.buildArmature(this._skeletonData.armature[0].name);
             //this._armature.enableAnimationCache(30);
             var armatureDisplay = this._armature.display;
             armatureDisplay.scaleX = armatureDisplay.scaleY = 1;
@@ -200,6 +201,17 @@ module d5power {
             }
             this.showMissionIcon();
             this.showPos();
+        }
+        public changeSkin(value:any):void
+        {
+            var pos = value.pos;
+            var path = value.path;
+            if(this._armature)
+            {
+                var image = this._factory.getTextureDisplay(path);
+                var bone: dragonBones.Bone = this._armature.getBone(pos);
+                bone.display = image;
+            }
         }
         public dispose():void {
             if (this._spriteSheet)
@@ -298,22 +310,26 @@ module d5power {
         public setupSkin(res:string)
         {
             this._drawAction = this.drawDB;
-            if(this._data.action == Actions.Attack)
+            if(this._data.action == Actions.Wait || this._data.action == Actions.Run)
             {
-                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,1);
-                if(this._armature)this._armature.addEventListener(dragonBones.AnimationEvent.COMPLETE, this.onAnimationEvent,this);
+                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,0);
             }
             else
             {
-                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,0);
+                if(this._armature)this._armature.animation.gotoAndPlay("action_"+this._data.action,-1,-1,1);
+                if(this._armature)this._armature.addEventListener(dragonBones.AnimationEvent.COMPLETE, this.onAnimationEvent,this);             
             }
             this.showMissionIcon();
         }
         private onAnimationEvent(evt: dragonBones.AnimationEvent):void
         {
-            this['atkfun']();
+            if(this._data.action == Actions.Attack)
+            {
+                this['atkfun']();
+                this._data.setAction(Actions.Wait);
+            }
             this._armature.removeEventListener(dragonBones.AnimationEvent.COMPLETE, this.onAnimationEvent,this);
-            this._data.setAction(Actions.Wait);
+            
         }
 
         public onSpriteSheepReady(data:IDisplayer):void

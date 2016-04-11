@@ -179,7 +179,7 @@ module d5power {
             if(this._color == 0xffffff)
             {
                 this.graphics.beginFill(0x000000,0.1);
-			    this.graphics.drawRect(0,0,60,60);
+			    this.graphics.drawRect(0,0,this.width,this.height);
 			    this.graphics.endFill();
             }
             this.graphics.beginFill(this._color,this.alpha);

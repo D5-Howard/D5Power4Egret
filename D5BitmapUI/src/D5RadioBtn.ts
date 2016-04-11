@@ -156,6 +156,21 @@ module d5power
             }
 
         }
+        public dispose():void
+        {
+            if(this.a)
+            {
+                if(this.a.parent)this.a.parent.removeChild(this.a);
+                this.a.texture = null;
+                this.a = null;
+            }
+            if(this._lable)
+            {
+                if(this._lable.parent)this._lable.parent.removeChild(this._lable);
+                this._lable = null;
+            }
+            this.data = null;
+        }
 
 
 

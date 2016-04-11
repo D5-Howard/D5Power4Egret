@@ -61,6 +61,7 @@ module d5power {
 
         protected _timer:number;
         private _readyBack:Function;
+        private _readyBackObj:any;
         protected _map:IMap;
         protected _player:IGD;
         protected _startX:number;
@@ -109,7 +110,7 @@ module d5power {
         }
         
 
-        public constructor(mapid:number,startx:number,starty:number,onReady:Function = null) {
+        public constructor(mapid:number,startx:number,starty:number,onReady:Function = null,onThisObj:any = null) {
             super();
             if (D5Game._me) this.error();
             this.touchEnabled = true;
@@ -121,6 +122,7 @@ module d5power {
 
             this.buildMap(mapid);
             this._readyBack = onReady;
+            this._readyBackObj = onThisObj;
             this._camera = new D5Camera();
 
             this._container_map = new Layer();
@@ -488,6 +490,10 @@ module d5power {
          */
         public setup(data:any):void {
             this._monsterConf = new Array<any>();
+            if(data.tileFormat!=null)
+            {
+                this._map.setTileFormat(data.tileFormat);
+            }
             this._map.setContainer(this._container_map);
             this._map.setup(
                 parseInt(data.id),
@@ -656,9 +662,10 @@ module d5power {
                 }
             }
 
-            if (this._readyBack != null) {
-                this._readyBack();
+            if (this._readyBack != null && this._readyBackObj!=null) {
+                this._readyBack.apply(this._readyBackObj);
                 this._readyBack = null;
+                this._readyBackObj = null;
             }
 
 

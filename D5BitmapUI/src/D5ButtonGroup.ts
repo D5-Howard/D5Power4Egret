@@ -40,7 +40,7 @@ module d5power
 		
 		public unsetup(e:egret.Event=null):void{
 
-			this.addEventListener(egret.TouchEvent.TOUCH_TAP,this._onItemClick,this);
+			this.removeEventListener(egret.TouchEvent.TOUCH_TAP,this._onItemClick,this);
 			var length:number = this.items.length;
 			for(var i:number = 0;i < length;i++){
 				var item:d5power.D5Component = <D5Component>this.items[i];
@@ -172,6 +172,10 @@ module d5power
 		public set bgShapeFlg(flg:number)
         {
 			this._bgShapeFlg = flg;
+		}
+		public dispose():void
+		{
+		    this.unsetup();
 		}
 	}
 }

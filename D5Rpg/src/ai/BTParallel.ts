@@ -34,8 +34,8 @@ module d5power {
         public _type:number;
         protected _results:Array<any>;
         public constructor(type:number,precondition:d5power.BTPrecondition = null) {
-            this._type = type;
             super(precondition);
+            this._type = type;
         }
         protected  DoEvaluate ():boolean
         {

@@ -124,5 +124,15 @@ module d5power {
 			
 			this.dispatchEvent(new egret.Event(egret.Event.CHANGE));
 		}
+		public dispose():void
+		{
+            if(this._monitor)
+            {
+                if(this._monitor.parent)this._monitor.parent.removeChild(this._monitor);
+                this._monitor.texture = null;
+                this._monitor = null;
+            }
+            this._spriteSheet = null;
+		}
 	}
 }

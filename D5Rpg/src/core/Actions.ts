@@ -43,6 +43,10 @@ module d5power {
 		 * */
 		public static Run:number=1;
 		/**
+		 * Sing 施法攻击
+		 * */
+		public static Sing:number=2;
+		/**
 		 * Attack 物理攻击
 		 * */
 		public static Attack:number=2;
