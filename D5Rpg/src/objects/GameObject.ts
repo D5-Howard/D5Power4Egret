@@ -175,7 +175,10 @@ module d5power {
         public setupData(data:IGD):void{
             this._data = data;
         }
-
+        public changeSkin(value:any):void
+        {
+            
+        }
         public dispose():void {
             if (this._spriteSheet)
             {

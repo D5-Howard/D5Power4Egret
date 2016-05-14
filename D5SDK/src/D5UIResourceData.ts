@@ -33,7 +33,7 @@ module d5power
 {
     export class D5UIResourceData
     {
-        private static _resource:egret.SpriteSheet;
+        private static _resource:any = {};
 
         private static _resourceLib:any={};
 
@@ -41,7 +41,7 @@ module d5power
 
         public static setupResLib(bitmap:egret.Texture,config:any)
         {
-            D5UIResourceData._resource = new egret.SpriteSheet(bitmap);
+            var sp:egret.SpriteSheet = new egret.SpriteSheet(bitmap);
             var obj:any;
             var uv:UVData;
             var cut:any;
@@ -87,7 +87,7 @@ module d5power
                         uv.height = obj.h-cut.y;
                         uvList.push(uv);
 
-                        data.setupResource(k,uvList);
+                        data.setupResource(sp,k,uvList);
                         break;
 
                     case "D5Window":
@@ -158,7 +158,7 @@ module d5power
                         uv.height = obj.h - cut1.y;
                         uvList.push(uv);
 
-                        data.setupResource(k,uvList);
+                        data.setupResource(sp,k,uvList);
                         break;
 
                     case "D5Button":
@@ -215,7 +215,7 @@ module d5power
                         }
 
 
-                        data.setupResource(k,uvList);
+                        data.setupResource(sp,k,uvList);
                         break;
 
                     case "D5MirrorLoop":
@@ -261,7 +261,7 @@ module d5power
 
                         }
 
-                        data.setupResource(k,uvList);
+                        data.setupResource(sp,k,uvList);
                         break;
 
                     case "D5Bitmap":
@@ -273,7 +273,7 @@ module d5power
                         uv.height = obj.h;
                         uvList.push(uv);
 
-                        data.setupResource(k,uvList);
+                        data.setupResource(sp,k,uvList);
                         break;
 
                     case "D5RadioBtn":
@@ -306,7 +306,7 @@ module d5power
                         uv.height = obj.h;
                         uvList.push(uv);
 
-                        data.setupResource(k,uvList);
+                        data.setupResource(sp,k,uvList);
                         break;
 
                     case "D5SliderButton":
@@ -355,7 +355,7 @@ module d5power
                         uv.height = obj.h / 2;
                         uvList.push(uv);
 
-                        data.setupResource(k,uvList);
+                        data.setupResource(sp,k,uvList);
                         break;
                     case "D5BitmapNumber":
 
@@ -368,7 +368,7 @@ module d5power
                             uv.height = obj.h;
                             uvList.push(uv);
                         }
-                        data.setupResource(k,uvList);
+                        data.setupResource(sp,k,uvList);
                         break;
 
 
@@ -390,19 +390,22 @@ module d5power
             this._resList = [];
         }
 
-        public setupResource(name:string,uvData:Array<UVData>):void
+        public setupResource(sp:egret.SpriteSheet,name:string,uvData:Array<UVData>):void
         {
             this._name=name;
+            
+            var txture:egret.Texture;
             for(var i:number=0,j:number=uvData.length;i<j;i++)
             {
-                D5UIResourceData._resource.createTexture(name+i,uvData[i].offX,uvData[i].offY,uvData[i].width,uvData[i].height);
+                txture = sp.createTexture(name+i,uvData[i].offX,uvData[i].offY,uvData[i].width,uvData[i].height);
+                D5UIResourceData._resource[name+i] = txture
             }
 
         }
 
         public getResource(id:number):egret.Texture
         {
-            return D5UIResourceData._resource.getTexture(this._name+id);
+            return D5UIResourceData._resource[this._name+id];
         }
     }
 }

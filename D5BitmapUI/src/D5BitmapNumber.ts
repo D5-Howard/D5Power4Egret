@@ -73,11 +73,11 @@ module d5power {
             this._box.removeChildren();
             for(var i: number = 0;i < len;i++){
                 pnumber = str.substr(i,1);
-                bitmap = <egret.Bitmap>this._numic[pnumber];
+                bitmap = <egret.Bitmap>this._numic[i];
                 if(!bitmap) 
                 {
                     bitmap = new egret.Bitmap();
-                    this._numic[pnumber] = bitmap;
+                    this._numic[i] = bitmap;
                 }
                 bitmap.texture = this.data.getResource(parseInt(pnumber))
                 this._box.addChild(bitmap);

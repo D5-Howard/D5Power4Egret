@@ -65,6 +65,9 @@ module d5power {
 
 
         private _shape:egret.Shape;
+        
+        public drawAlpha:number = 1;
+        
         public constructor()
         {
             super();
@@ -77,19 +80,19 @@ module d5power {
             switch(this._workMode)
             {
                 case D5Shape.RECT:
-                    this._shape.graphics.beginFill(this._fillColor);
+                     this._shape.graphics.beginFill(this._fillColor,this.drawAlpha);
                     if(this._tickNess>0)
                     {
-                        this._shape.graphics.lineStyle(this._tickNess, this._color);
+                        this._shape.graphics.lineStyle(this._tickNess, this._color,this.drawAlpha);
                     }
-                    this._shape.graphics.drawRect(this._offX,this._offY,this.width,this.height);
+                    this._shape.graphics.drawRect(this._offX,this._offY,this._w,this._h);
                     this._shape.graphics.endFill();
                     break;
                 case D5Shape.CIRCLE:
-                    this._shape.graphics.beginFill(this._fillColor);
+                     this._shape.graphics.beginFill(this._fillColor,this.drawAlpha);
                     if(this._tickNess>0)
                     {
-                        this._shape.graphics.lineStyle(this._tickNess, this._color);
+                        this._shape.graphics.lineStyle(this._tickNess, this._color,this.drawAlpha);
                     }
                     this._shape.graphics.drawCircle(this._offX,this._offY,this._radius);
                     this._shape.graphics.endFill();

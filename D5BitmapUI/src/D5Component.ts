@@ -40,6 +40,40 @@ module d5power
             super();
             if(D5Component.autoRelease) this.addEventListener(egret.Event.REMOVED_FROM_STAGE,this.dispose,this);
         }
+        
+        /**
+		 * 将与自己同容器，且在自己范围内的对象纳入自己的自对象，形成一个整体
+		 */
+		public add2Me(e:egret.Event=null):void
+		{
+			if(parent==null)
+			{
+				this.addEventListener(egret.Event.ADDED_TO_STAGE,this.add2Me,this);
+				return;
+			}
+			if(e) this.removeEventListener(egret.Event.ADDED_TO_STAGE,this.add2Me,this);
+			var rect:egret.Rectangle = new egret.Rectangle(this.x,this.y,this.width,this.height);
+			var arr:Array<egret.DisplayObject> = [];
+			var _root:egret.DisplayObjectContainer = this.parent;
+			for(var i:number=_root.numChildren-1;i>=0;i--)
+			{
+				var obj:egret.DisplayObject = _root.getChildAt(i);
+				if(obj!=this && obj.parent==_root)
+				{
+					if(rect.contains(obj.x,obj.y))
+					{
+						obj.x = obj.x-this.x;
+						obj.y = obj.y-this.y;
+						arr.push(obj);
+					}
+				}
+			}
+			
+			for(i=arr.length-1;i>=0;i--)
+			{
+				this.addChild(arr[i]);
+			}
+		}
 
         public setSkin(name:string):void
         {
@@ -88,12 +122,37 @@ module d5power
             container['_realHeight'] = parseInt(obj.height);
             container['_flyX'] = obj.flyx;
             container['_flyY'] = obj.flyy;
+            if(obj.moveType)
+            {
+                switch(obj.moveType) 
+                {
+                    case 1://上
+                        container.y = - parseInt(obj.offse);
+                        break;
+                    case 2://下
+                        container.y = parseInt(obj.offse);
+                        break;
+                    case 3://左
+                        container.x = - parseInt(obj.offse);
+                        break;
+                    case 4://右
+                        container.x = parseInt(obj.offse);
+                        break;
+                }
+            }
+            
             for(var i:number = 0;i < length;i++)
             {
                 comObj = arr[i];
                 container.addChild(this.getCompoentByJson(comObj,container));
             }
             if(onComplate) onComplate.apply(container);
+//            var object: Object = { x: 0,y: 0,alpha: 1,rotation: 0,scaleX: 1,scaleY: 1 };
+//            egret.Tween.get(container).to(object,500,null);
+        }
+        private tweenComplete1(param1: egret.DisplayObjectContainer): void 
+        {
+            egret.Tween.removeTweens(param1);
         }
         public static getCompoentByJson(value:any,container:egret.DisplayObjectContainer):any
         {
@@ -288,6 +347,7 @@ module d5power
                     com.name = value.name;
                     com.x = value.x;
                     com.y = value.y;
+                    (<D5Shape>com).drawAlpha = value.alpha==null ? 1 : value.alpha;
                     (<D5Shape>com).setWorkMode(value.workMode);
                     (<D5Shape>com).setFillColor(value.fillColor);
                     (<D5Shape>com).setTickNess(value.tickNess);

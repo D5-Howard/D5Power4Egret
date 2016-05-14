@@ -44,5 +44,6 @@ module d5power {
 		showMissionStatus(index:number):void;
 		camp:number;
         playFream:number;
+        changeSkin(value:any):void;
 	}
 }

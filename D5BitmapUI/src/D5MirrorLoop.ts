@@ -48,6 +48,10 @@ module d5power
         {
             RES.getResByUrl(name,this.onComplate,this);
         }
+        public setRes(data:egret.Texture):void
+        {
+            this.onComplate(data);
+        }
         private onComplate(data:egret.Texture):void
         {
             var sheet:egret.SpriteSheet = new egret.SpriteSheet(data);
@@ -130,7 +134,7 @@ module d5power
         {
             if(this.front==null)
             {
-
+                return;
             }else{
 
                 if(!this.contains(this.front)) {

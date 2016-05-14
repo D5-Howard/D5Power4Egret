@@ -81,6 +81,10 @@ module d5power
             //RES.loadGroup("preload");
             RES.getResByUrl(this._url, this.onComplete, this);
         }
+        public setRes(data:egret.Texture):void
+        {
+            this.onComplete(data);
+        }
         private onComplete(data:any):void
         {
             if(this.bit == null) this.bit = new egret.Bitmap();
